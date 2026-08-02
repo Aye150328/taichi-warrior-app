@@ -375,6 +375,11 @@
   .rec-lbl{display:block;font-weight:700;font-size:.78rem;letter-spacing:.09em;text-transform:uppercase;color:var(--muted);margin-bottom:8px}
   .rec-time{font-size:1.5rem;padding:14px 16px;border:1px solid var(--line);border-radius:16px;background:var(--surface);color:var(--ink);font-family:inherit;width:100%;margin-bottom:20px}
   .rec-note{color:var(--muted);font-size:.86rem;margin-top:14px;line-height:1.5}
+  .bloqueado .nut-content{filter:blur(6px) saturate(.65);opacity:.5;pointer-events:none;user-select:none}
+  .lock-card{background:var(--surface);border:1px solid var(--line);border-radius:20px;padding:26px 20px;text-align:center;margin-bottom:16px;box-shadow:0 16px 40px -20px rgba(0,0,0,.3);position:relative;z-index:2}
+  .lock-card .lk-ic{font-size:2.6rem}
+  .lock-card h3{font-family:var(--f-serif);font-size:1.42rem;font-weight:600;margin-top:6px}
+  .lock-card p{color:var(--ink-soft);margin:8px auto 16px;max-width:30ch;line-height:1.5}
   #toast{position:absolute;bottom:96px;left:50%;transform:translateX(-50%) translateY(20px);z-index:90;
     background:var(--ink);color:var(--paper);padding:13px 20px;border-radius:999px;font-size:.95rem;font-weight:600;
     opacity:0;transition:opacity .25s,transform .25s;pointer-events:none;white-space:nowrap;max-width:88%;
@@ -442,9 +447,9 @@
       </button>
 
       <div class="stats">
-        <div class="stat brand"><div class="n">2<small> días</small></div><div class="l">Racha</div></div>
-        <div class="stat accent"><div class="n">23<small> min</small></div><div class="l">Esta semana</div></div>
-        <div class="stat"><div class="n">3<small>/20</small></div><div class="l">Sesiones</div></div>
+        <div class="stat brand"><div class="n"><span id="stRacha">0</span><small> días</small></div><div class="l">Racha</div></div>
+        <div class="stat accent"><div class="n"><span id="stMin">0</span><small> min</small></div><div class="l">Esta semana</div></div>
+        <div class="stat"><div class="n"><span id="stSes">0</span><small>/20</small></div><div class="l">Sesiones</div></div>
       </div>
 
       <div class="eyebrow">Respirá conmigo</div>
@@ -495,22 +500,18 @@
 
       <div class="eyebrow">Nivel de Tai Chi</div>
       <div class="level">
-        <div class="row"><b>Principiante</b><span>Meta: Intermedio</span></div>
-        <div class="bar"><i></i></div>
-        <small>Te faltan <b>3 sesiones</b> para subir de nivel.</small>
+        <div class="row"><b id="lvlName">Principiante</b><span>Meta: Intermedio</span></div>
+        <div class="bar"><i id="lvlBar" style="width:0%"></i></div>
+        <small id="lvlText">Empezá tu primera clase para sumar progreso.</small>
       </div>
 
       <div class="eyebrow">Esta semana</div>
-      <div class="week-dots">
-        <div class="dot on">L</div><div class="dot on">M</div>
-        <div class="dot today">M</div><div class="dot">J</div>
-        <div class="dot">V</div><div class="dot">S</div><div class="dot">D</div>
-      </div>
+      <div class="week-dots" id="weekDots"></div>
 
       <div class="stats" style="margin-top:22px">
-        <div class="stat brand"><div class="n">23<small>m</small></div><div class="l">Total</div></div>
-        <div class="stat accent"><div class="n">2</div><div class="l">Sesiones</div></div>
-        <div class="stat"><div class="n">🔥2</div><div class="l">Racha</div></div>
+        <div class="stat brand"><div class="n"><span id="pgMin">0</span><small>m</small></div><div class="l">Total</div></div>
+        <div class="stat accent"><div class="n" id="pgSes">0</div><div class="l">Sesiones</div></div>
+        <div class="stat"><div class="n" id="pgRacha">0</div><div class="l">Racha</div></div>
       </div>
 
       <div class="eyebrow">Cómo te sentís</div>
@@ -565,6 +566,7 @@
       <div class="eyebrow">Ayuda</div>
       <div class="rowlist">
         <button onclick="abrirFAQ()"><span class="ic">❓</span> Preguntas frecuentes <span class="arr">›</span></button>
+        <button onclick="accesoAdmin()"><span class="ic">🔑</span> Acceso administrador <span class="arr">›</span></button>
         
       </div>
       <p class="foot-note">Taichi Warrior · versión prototipo</p>
@@ -733,8 +735,10 @@
       +'<div class="info"><h3>'+s.title+'</h3><p>'+s.movs.length+' movimientos - '+s.min+' min</p></div>'+badge+'</button>';
   }
   function renderPrograma(){
-    const st = {1:'done',2:'done',3:'now'};
-    [1,2,3,4].forEach(w=>{ document.getElementById('week'+w).innerHTML = PROGRAMA.filter(s=>s.sem===w).map(s=>sessBtn(s,st[s.id]||'open')).join(''); });
+    var hechas=(getProg().hechas)||[];
+    var prox=null; for(var i=0;i<PROGRAMA.length;i++){ if(hechas.indexOf(PROGRAMA[i].id)<0){prox=PROGRAMA[i].id;break;} }
+    function estado(s){ return hechas.indexOf(s.id)>=0?'done':(s.id===prox?'now':'open'); }
+    [1,2,3,4].forEach(function(w){ document.getElementById('week'+w).innerHTML = PROGRAMA.filter(function(s){return s.sem===w;}).map(function(s){return sessBtn(s,estado(s));}).join(''); });
   }
   renderPrograma();
   function abrirSesion(id){ const s=PROGRAMA.find(x=>x.id===id); if(s) abrirRutina(s); }
@@ -750,6 +754,7 @@
   function entrar(){ document.getElementById('login').classList.add('hide'); }
   function salir(){ document.getElementById('login').classList.remove('hide'); }
   function abrirRutina(s){
+    curSes=s;
     document.getElementById('rttitle').textContent = s.title;
     document.getElementById('rtsub').textContent = 'Semana '+s.sem+' - '+s.min+' min - '+s.movs.length+' movimientos';
     var html = s.movs.map(function(code,i){
@@ -775,7 +780,7 @@
     requestAnimationFrame(function(){ _sc.scrollTop=0; });
   }
   function cerrarRutina(){ document.getElementById('routine').classList.remove('on'); }
-  function hechaRutina(){ cerrarRutina(); showToast('Bien hecho! Sesion completada'); }
+  function hechaRutina(){ if(curSes)completarSesion(curSes); cerrarRutina(); showToast('¡Bien hecho! Sesión completada 🌿'); }
   function abrirPaywall(){ document.getElementById('paywall-modal').classList.add('on'); }
   function cerrarPaywall(){ document.getElementById('paywall-modal').classList.remove('on'); }
   function irCheckout(){ window.location.href = SHOPIFY_SUB_URL; }
@@ -900,18 +905,59 @@
   }
   function renderNutricion(){
     var cont=document.getElementById('nutriDias'); if(!cont) return;
-    var bloques=[['Semanas 1 y 3 - gratis',1],['Semanas 2 y 4 - Plus',21]];
-    var html='';
+    var bloques=[['Semana 1 y 3',1],['Semana 2 y 4',21]];
+    var inner='';
     bloques.forEach(function(b){
-      html+='<div class="eyebrow">'+b[0]+'</div>';
+      inner+='<div class="eyebrow">'+b[0]+'</div>';
       for(var d=0;d<5;d++){
-        html+='<div class="weekhead"><h3>Día '+(d+1)+'</h3></div>';
-        for(var m=0;m<4;m++){ var n=b[1]+d*4+m; html+=nutCard('R'+('0'+n).slice(-2)); }
+        inner+='<div class="weekhead"><h3>Día '+(d+1)+'</h3></div>';
+        for(var m=0;m<4;m++){ var n=b[1]+d*4+m; inner+=nutCard('R'+('0'+n).slice(-2)); }
       }
     });
-    cont.innerHTML=html;
+    if(plusActivo()){ cont.className=''; cont.innerHTML=inner; }
+    else { cont.className='bloqueado';
+      cont.innerHTML='<div class="lock-card"><div class="lk-ic">🔒</div><h3>Nutrición Plus</h3><p>El plan de comidas de 4 semanas es parte de la Suscripción Plus.</p><button class="cta" onclick="abrirPaywall()">Desbloquear con la suscripción</button></div><div class="nut-content">'+inner+'</div>'; }
   }
   renderNutricion();
+  /* ===== progreso por dispositivo (localStorage) + Plus + admin ===== */
+  const ADMIN_PASS = "___PENDIENTE___";
+  const PLUS_CODE = "guerrero-plus-2026";
+  var curSes = null;
+  function hoyISO(){return new Date().toISOString().slice(0,10);}
+  function getProg(){try{return JSON.parse(localStorage.getItem('tw_prog'))||{};}catch(x){return {};}}
+  function saveProg(p){try{localStorage.setItem('tw_prog',JSON.stringify(p));}catch(x){}}
+  function calcProg(){
+    var p=getProg(); var log=p.log||[]; var min=0,sem=0,dias={}; var now=Date.now();
+    log.forEach(function(e){min+=e.min||0; dias[e.d]=1; if((now-new Date(e.d).getTime())<7*864e5) sem+=e.min||0;});
+    var racha=0; var d=new Date(); if(!dias[d.toISOString().slice(0,10)]) d.setDate(d.getDate()-1);
+    while(dias[d.toISOString().slice(0,10)]){racha++; d.setDate(d.getDate()-1);}
+    return {ses:(p.hechas||[]).length, min:min, sem:sem, racha:racha, dias:Object.keys(dias)};
+  }
+  function completarSesion(s){
+    var p=getProg(); p.hechas=p.hechas||[]; if(p.hechas.indexOf(s.id)<0)p.hechas.push(s.id);
+    p.log=p.log||[]; p.log.push({d:hoyISO(),min:s.min}); saveProg(p);
+    renderPrograma(); renderStats();
+  }
+  function renderStats(){
+    var c=calcProg();
+    function set(id,v){var e=document.getElementById(id);if(e)e.textContent=v;}
+    set('stRacha',c.racha); set('stMin',c.sem); set('stSes',c.ses);
+    set('pgMin',c.min); set('pgSes',c.ses); set('pgRacha',c.racha);
+    var bar=document.getElementById('lvlBar'); if(bar) bar.style.width=Math.min(100,Math.round(c.ses/10*100))+'%';
+    var ln=document.getElementById('lvlName'); if(ln) ln.textContent=c.ses>=10?'Intermedio':'Principiante';
+    var lt=document.getElementById('lvlText'); if(lt) lt.textContent=c.ses>=10?'¡Alcanzaste el nivel Intermedio!':('Te faltan '+(10-c.ses)+' sesiones para subir de nivel.');
+    var wd=document.getElementById('weekDots');
+    if(wd){ var lab=['L','M','M','J','V','S','D']; var td=new Date(); var dow=(td.getDay()+6)%7; var mon=new Date(td); mon.setDate(td.getDate()-dow); var h='';
+      for(var i=0;i<7;i++){ var dd=new Date(mon); dd.setDate(mon.getDate()+i); var key=dd.toISOString().slice(0,10); var act=c.dias.indexOf(key)>=0; h+='<div class="dot'+(act?' on':'')+(i===dow?' today':'')+'">'+lab[i]+'</div>'; }
+      wd.innerHTML=h; }
+  }
+  function plusActivo(){try{return localStorage.getItem('tw_plus')==='1';}catch(x){return false;}}
+  function accesoAdmin(){ var p=prompt('Contraseña de administrador:'); if(p===null)return;
+    if(ADMIN_PASS!=='___PENDIENTE___' && p===ADMIN_PASS){ try{localStorage.setItem('tw_plus','1');}catch(x){} renderNutricion(); showToast('Acceso Plus habilitado ✓'); }
+    else if(ADMIN_PASS==='___PENDIENTE___'){ showToast('Falta definir la contraseña'); }
+    else { showToast('Contraseña incorrecta'); } }
+  function chequearUnlockURL(){ try{ var q=new URLSearchParams(location.search); if(q.get('plus') && q.get('plus')===PLUS_CODE){ localStorage.setItem('tw_plus','1'); } }catch(x){} }
+  chequearUnlockURL(); renderStats(); renderNutricion(); renderPrograma();
   /* ---- perfil: foto, recordatorio, reseña, FAQ ---- */
   function abrirSheet(id){document.getElementById(id).classList.add('on');var sc=document.querySelector('#'+id+' .rt-scroll');if(sc)sc.scrollTop=0;}
   function cerrarSheet(id){document.getElementById(id).classList.remove('on');}
