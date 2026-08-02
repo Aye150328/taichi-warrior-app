@@ -392,7 +392,7 @@
       <div class="stats">
         <div class="stat brand"><div class="n">2<small> días</small></div><div class="l">Racha</div></div>
         <div class="stat accent"><div class="n">23<small> min</small></div><div class="l">Esta semana</div></div>
-        <div class="stat"><div class="n">2<small>/5</small></div><div class="l">Sesiones</div></div>
+        <div class="stat"><div class="n">3<small>/20</small></div><div class="l">Sesiones</div></div>
       </div>
 
       <div class="eyebrow">Respirá conmigo</div>
@@ -411,33 +411,28 @@
     <section class="screen" id="programa">
       <div class="topbar">
         <div class="brand"><b>Tu programa</b></div>
-        <div class="phase">Semana 1 gratis</div>
+        <div class="phase">20 sesiones</div>
       </div>
       <h1 class="greet">Fuerte y <em>Tranquilo</em></h1>
       <p class="sub">Personalizado para 60-69 años. Un paso por día, sin saltear.</p>
 
-      <div class="weekhead"><h3>Semana 1 <span class="free-tag">Gratis</span></h3><span>2 de 5 hechas</span></div>
+      <div class="weekhead"><h3>Semana 1 · Los cimientos</h3><span>2 de 5 hechas</span></div>
       <div id="week1"></div>
-
-      <!-- Paywall -->
-      <div class="paywall">
-        <div class="pw-ic">🔓</div>
-        <h3>Seguí tu transformación</h3>
-        <p>Tu semana gratis está lista. Desbloqueá las <b>semanas 2, 3 y 4</b> + rutinas nuevas cada mes con la membresía.</p>
-        <button class="cta" onclick="abrirPaywall()" style="margin-top:16px">
-          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 1a5 5 0 00-5 5v3H6a2 2 0 00-2 2v9a2 2 0 002 2h12a2 2 0 002-2v-9a2 2 0 00-2-2h-1V6a5 5 0 00-5-5zm3 8H9V6a3 3 0 016 0z"/></svg>
-          Activar mi membresía
-        </button>
-      </div>
-
-      <div class="weekhead locked-head"><h3>Semana 2 - El rio se mueve</h3><span class="mem">Membresia</span></div>
+      <div class="weekhead"><h3>Semana 2 · El río se mueve</h3></div>
       <div id="week2"></div>
-      <div class="weekhead locked-head"><h3>Semana 3 - Fuerza tranquila</h3><span class="mem">Membresia</span></div>
+      <div class="weekhead"><h3>Semana 3 · Fuerza tranquila</h3></div>
       <div id="week3"></div>
-      <div class="weekhead locked-head"><h3>Semana 4 - El guerrero sereno</h3><span class="mem">Membresia</span></div>
+      <div class="weekhead"><h3>Semana 4 · El guerrero sereno</h3></div>
       <div id="week4"></div>
 
-      <p class="foot-note">Semana 1 gratis - La membresia desbloquea las 4 semanas + rutinas nuevas cada mes</p>
+      <div class="eyebrow">Contenido Plus · suscripción</div>
+      <button class="sess locked" onclick="abrirPaywall()">
+        <div class="thumb nut">⭐</div>
+        <div class="info"><h3>Tai Chi Avanzado</h3><p>Clases plus · desbloqueá con la suscripción</p></div>
+        <span class="badge lock">🔒</span>
+      </button>
+
+      <p class="foot-note">Compraste el programa completo · 20 sesiones para siempre</p>
     </section>
 
     <!-- PROGRESO -->
@@ -486,7 +481,12 @@
         <span class="badge free">▶ Leer</span>
       </button>
 
-      <div class="eyebrow">Planes de la membresía</div>
+      <div class="eyebrow">Suscripción Nutrición · $9/mes</div>
+      <button class="sess locked" onclick="abrirPaywall()">
+        <div class="thumb nut">🍽️</div>
+        <div class="info"><h3>Plan básico · 4 comidas al día</h3><p>Qué platos y comidas, todo el mes</p></div>
+        <span class="badge lock">🔒</span>
+      </button>
       <button class="sess locked" onclick="abrirPaywall()">
         <div class="thumb nut">🥗</div>
         <div class="info"><h3>Plan antiinflamatorio · 7 días</h3><p>Menú completo + lista de compras</p></div>
@@ -513,16 +513,16 @@
         <div class="avatar">M</div>
         <div><h2>María</h2><p>60-69 años · Objetivo: Fuerte y Tranquilo</p></div>
       </div>
-      <span class="plan-pill free">◐ Semana 1 gratis</span>
+      <span class="plan-pill free">✓ Programa completo</span>
 
       <div class="pw-mini" onclick="abrirPaywall()">
-        <div><b>Activá tu membresía</b><small>Desbloqueá las 4 semanas + rutinas nuevas cada mes</small></div>
+        <div><b>Suscripción Plus</b><small>Nutrición + Tai Chi Avanzado · $9/mes</small></div>
         <span>›</span>
       </div>
 
       <div class="eyebrow">Tu plan</div>
       <div class="rowlist">
-        <button onclick="abrirPaywall()"><span class="ic">🔓</span> Activar membresía <span class="arr">›</span></button>
+        <button onclick="abrirPaywall()"><span class="ic">🔓</span> Suscripción Plus <span class="arr">›</span></button>
         <button><span class="ic">📅</span> Horario de recordatorio <span class="arr">›</span></button>
         <button><span class="ic">⭐</span> Dejar una reseña <span class="arr">›</span></button>
       </div>
@@ -567,21 +567,21 @@
     <button class="pw-close" onclick="cerrarPaywall()" aria-label="Cerrar">×</button>
     <div class="pw-body">
       <div class="pw-hero">🧘</div>
-      <h2>Membresía Taichi Warrior</h2>
-      <p>Seguí desbloqueando fuerza y calma, a tu ritmo, desde tu silla.</p>
+      <h2>Suscripción Plus</h2>
+      <p>Sumá a tu programa, cada mes, por un precio bajo.</p>
       <ul class="pw-list">
-        <li>✓ Las 4 semanas completas · 20 sesiones guiadas</li>
-        <li>✓ Rutinas nuevas cada mes</li>
+        <li>✓ Plan de nutrición: 4 comidas al día, todo el mes</li>
+        <li>✓ Clases de Tai Chi Avanzado (Plus)</li>
         <li>✓ Seguimiento de tu progreso y nivel</li>
         <li>✓ Cancelás cuando quieras</li>
       </ul>
       <div class="pw-plans">
         <label class="pw-plan popular">
-          <div><b>Membresía mensual</b><small>Renovación automática</small></div>
+          <div><b>Suscripción mensual</b><small>Renovación automática</small></div>
           <div class="pw-price"><s>$18</s> <b>$9</b><span>/mes</span></div>
         </label>
       </div>
-      <button class="pw-buy" onclick="irCheckout()">Activar membresía</button>
+      <button class="pw-buy" onclick="irCheckout()">Activar suscripción</button>
       <div class="pw-foot">Pago seguro · Garantía de 30 días · Se conecta a tu checkout de Shopify</div>
     </div>
   </div>
@@ -641,19 +641,17 @@
   function sessBtn(s,state){
     const badge = state==='done'?'<span class="badge done">Hecha</span>'
       : state==='now'?'<span class="badge now">Hoy</span>'
-      : state==='free'?'<span class="badge free">Ver</span>'
-      : '<span class="badge lock">Membresia</span>';
-    return '<button class="sess'+(state==='lock'?' locked':'')+'" onclick="abrirSesion('+s.id+')">'
+      : '<span class="badge free">Ver</span>';
+    return '<button class="sess" onclick="abrirSesion('+s.id+')">'
       +'<div class="thumb"><img src="'+MOV[s.movs[0]].img+'" alt="" loading="lazy"></div>'
       +'<div class="info"><h3>'+s.title+'</h3><p>'+s.movs.length+' movimientos - '+s.min+' min</p></div>'+badge+'</button>';
   }
   function renderPrograma(){
-    const st = {1:'done',2:'done',3:'now',4:'free',5:'free'};
-    document.getElementById('week1').innerHTML = PROGRAMA.filter(s=>s.sem===1).map(s=>sessBtn(s,st[s.id])).join('');
-    [2,3,4].forEach(w=>{ document.getElementById('week'+w).innerHTML = PROGRAMA.filter(s=>s.sem===w).map(s=>sessBtn(s,'lock')).join(''); });
+    const st = {1:'done',2:'done',3:'now'};
+    [1,2,3,4].forEach(w=>{ document.getElementById('week'+w).innerHTML = PROGRAMA.filter(s=>s.sem===w).map(s=>sessBtn(s,st[s.id]||'open')).join(''); });
   }
   renderPrograma();
-  function abrirSesion(id){ const s=PROGRAMA.find(x=>x.id===id); if(!s) return; if(s.sem===1) abrirRutina(s); else abrirPaywall(); }
+  function abrirSesion(id){ const s=PROGRAMA.find(x=>x.id===id); if(s) abrirRutina(s); }
 
   function irA(id,btn){
     document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
