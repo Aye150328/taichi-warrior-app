@@ -790,8 +790,9 @@
       }).join('');
     }
     document.getElementById('rtsteps').innerHTML = html;
-    document.getElementById('rtsteps').scrollTop=0;
     document.getElementById('routine').classList.add('on');
+    var _sc=document.getElementById('rtsteps'); _sc.scrollTop=0;
+    requestAnimationFrame(function(){ _sc.scrollTop=0; });
   }
   function cerrarRutina(){ document.getElementById('routine').classList.remove('on'); }
   function hechaRutina(){ cerrarRutina(); showToast('Bien hecho! Sesion completada'); }
@@ -841,8 +842,9 @@
       document.getElementById('rcing').innerHTML=r.ing.map(x=>'<li>'+x+'</li>').join('');
     }
     document.getElementById('rcprep').innerHTML=r.prep.map(x=>'<li>'+x+'</li>').join('');
-    document.querySelector('#receta .rt-scroll').scrollTop=0;
     document.getElementById('receta').classList.add('on');
+    var _rc=document.querySelector('#receta .rt-scroll'); _rc.scrollTop=0;
+    requestAnimationFrame(function(){ _rc.scrollTop=0; });
   }
   function cerrarReceta(){ document.getElementById('receta').classList.remove('on'); }
   function showToast(m){ const t=document.getElementById('toast'); t.textContent=m; t.classList.add('show');
