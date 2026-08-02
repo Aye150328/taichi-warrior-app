@@ -254,7 +254,7 @@
     font-size:1.4rem;cursor:pointer;flex:none;line-height:1}
   .rt-top h3{font-family:var(--f-serif);font-size:1.28rem;font-weight:600;line-height:1.15}
   .rt-top small{color:var(--muted);font-weight:600;display:block;margin-top:2px}
-  .rt-scroll{flex:1;overflow-y:auto;padding:16px 16px 8px}
+  .rt-scroll{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:16px 16px 8px}
   .rt-step{background:var(--surface);border:1px solid var(--line);border-radius:20px;padding:16px;margin-bottom:14px}
   .rt-fig{border-radius:14px;overflow:hidden;background:#e8ebe1;margin-bottom:14px}
   .rt-fig svg{height:122px;width:auto;margin:14px auto;display:block;color:var(--brand)}
@@ -728,12 +728,24 @@
   function abrirRutina(s){
     document.getElementById('rttitle').textContent = s.title;
     document.getElementById('rtsub').textContent = 'Semana '+s.sem+' - '+s.min+' min - '+s.movs.length+' movimientos';
-    document.getElementById('rtsteps').innerHTML = s.movs.map((code,i)=>{
-      const m = MOV[code];
+    var html = s.movs.map(function(code,i){
+      var m = MOV[code];
       return '<div class="rt-step"><div class="rt-fig"><img class="rt-photo" src="'+m.img+'" alt="'+m.t+'"></div>'
         +'<span class="rt-n">Paso '+(i+1)+'</span><h4>'+m.t+'</h4><p>'+m.p+'</p>'
         +'<span class="rt-dur">'+m.d+'</span></div>';
     }).join('');
+    var hermanas = PROGRAMA.filter(function(x){ return x.sem===s.sem && x.id!==s.id; });
+    if(hermanas.length){
+      var label = s.sem<=4 ? ('Seguí con la Semana '+s.sem) : 'Otras clases';
+      html += '<div class="eyebrow" style="margin-top:30px">'+label+'</div>';
+      html += hermanas.map(function(x){
+        return '<button class="sess" onclick="abrirRutina(PROGRAMA.find(function(p){return p.id==='+x.id+';}))">'
+          +'<div class="thumb"><img src="'+MOV[x.movs[0]].img+'" alt="" loading="lazy"></div>'
+          +'<div class="info"><h3>'+x.title+'</h3><p>'+x.movs.length+' movimientos - '+x.min+' min</p></div>'
+          +'<span class="badge free">Ver</span></button>';
+      }).join('');
+    }
+    document.getElementById('rtsteps').innerHTML = html;
     document.getElementById('rtsteps').scrollTop=0;
     document.getElementById('routine').classList.add('on');
   }
