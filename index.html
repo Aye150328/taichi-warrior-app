@@ -441,9 +441,6 @@
       <div class="weekhead"><h3>Semana 4 · El guerrero sereno</h3></div>
       <div id="week4"></div>
 
-      <div class="weekhead"><h3>Clases temáticas</h3></div>
-      <div id="tematicas"></div>
-
       <div class="eyebrow">Contenido Plus · suscripción</div>
       <button class="sess locked" onclick="abrirPaywall()">
         <div class="thumb nut">⭐</div>
@@ -746,23 +743,18 @@
     {id:18,sem:4,title:"Calma profunda",min:14,movs:["M01","M07","M08","M17","M30","M04","M24"]},
     {id:19,sem:4,title:"El maestro fluye",min:15,movs:["M01","M29","M10","M12","M15","M16","M24"]},
     {id:20,sem:4,title:"Ceremonia de cierre",min:15,movs:["M01","M27","M03","M18","M10","M23","M24"]},
-    {id:21,sem:5,title:"Solo Brazos",min:14,movs:["M01","M05","M06","M03","M10","M11","M13","M24"]},
-    {id:22,sem:5,title:"Solo Piernas",min:15,movs:["M01","M25","M26","M21","M27","M19","M29","M24"]},
-    {id:23,sem:5,title:"Relax y Respiración",min:12,movs:["M01","M02","M04","M06","M09","M30","M24"]},
-    {id:24,sem:5,title:"Energía Express",min:8,movs:["M01","M20","M11","M10","M14","M24"]},
   ];
   function sessBtn(s,state){
     const badge = state==='done'?'<span class="badge done">Hecha</span>'
       : state==='now'?'<span class="badge now">Hoy</span>'
       : '<span class="badge free">Ver</span>';
     return '<button class="sess" onclick="abrirSesion('+s.id+')">'
-      +'<div class="thumb"><img src="'+MOV[s.movs[0]].img+'" alt="" loading="lazy"></div>'
+      +'<div class="thumb"><img src="'+MOV[(s.movs.find(function(c){return c!=='M01'&&c!=='M02';})||s.movs[0])].img+'" alt="" loading="lazy"></div>'
       +'<div class="info"><h3>'+s.title+'</h3><p>'+s.movs.length+' movimientos - '+s.min+' min</p></div>'+badge+'</button>';
   }
   function renderPrograma(){
     const st = {1:'done',2:'done',3:'now'};
     [1,2,3,4].forEach(w=>{ document.getElementById('week'+w).innerHTML = PROGRAMA.filter(s=>s.sem===w).map(s=>sessBtn(s,st[s.id]||'open')).join(''); });
-    const tm=document.getElementById('tematicas'); if(tm) tm.innerHTML = PROGRAMA.filter(s=>s.sem===5).map(s=>sessBtn(s,'open')).join('');
   }
   renderPrograma();
   function abrirSesion(id){ const s=PROGRAMA.find(x=>x.id===id); if(s) abrirRutina(s); }
@@ -792,7 +784,7 @@
       html += '<div class="eyebrow" style="margin-top:30px">'+label+'</div>';
       html += hermanas.map(function(x){
         return '<button class="sess" onclick="abrirRutina(PROGRAMA.find(function(p){return p.id==='+x.id+';}))">'
-          +'<div class="thumb"><img src="'+MOV[x.movs[0]].img+'" alt="" loading="lazy"></div>'
+          +'<div class="thumb"><img src="'+MOV[(x.movs.find(function(c){return c!=='M01'&&c!=='M02';})||x.movs[0])].img+'" alt="" loading="lazy"></div>'
           +'<div class="info"><h3>'+x.title+'</h3><p>'+x.movs.length+' movimientos - '+x.min+' min</p></div>'
           +'<span class="badge free">Ver</span></button>';
       }).join('');
