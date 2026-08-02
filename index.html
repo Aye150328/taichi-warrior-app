@@ -244,25 +244,25 @@
   #login .enter:active{transform:translateY(1px)}
   #login .foot{font-size:.85rem;opacity:.7}
 
-  /* ---- video modal ---- */
-  #player{position:absolute;inset:0;z-index:70;background:#05100c;color:#fff;display:none;flex-direction:column}
-  #player.on{display:flex;animation:rise .3s ease}
-  #player .stage{flex:1;position:relative;overflow:hidden;display:grid;place-items:center}
-  #player canvas{position:absolute;inset:0;width:100%;height:100%;opacity:.75}
-  #player .big{position:relative;z-index:2;width:92px;height:92px;border-radius:50%;border:none;cursor:pointer;
-    background:rgba(255,255,255,.16);backdrop-filter:blur(6px);color:#fff;display:grid;place-items:center;
-    border:2px solid rgba(255,255,255,.5)}
-  #player .big svg{width:38px;height:38px;margin-left:4px}
-  #player .demo{position:absolute;z-index:2;bottom:96px;left:50%;transform:translateX(-50%);
-    background:rgba(0,0,0,.5);padding:9px 15px;border-radius:999px;font-size:.84rem;white-space:nowrap}
-  #player .pbar{position:absolute;left:16px;right:16px;bottom:70px;z-index:2;height:5px;border-radius:9px;background:rgba(255,255,255,.25)}
-  #player .pbar i{display:block;height:100%;width:22%;background:var(--accent);border-radius:9px}
-  #player .ptop{position:absolute;top:0;left:0;right:0;z-index:3;padding:20px;display:flex;align-items:center;justify-content:space-between;
-    background:linear-gradient(180deg,rgba(0,0,0,.5),transparent)}
-  #player .ptop h3{font-family:var(--f-serif);font-size:1.2rem;font-weight:600}
-  #player .ptop small{color:rgba(255,255,255,.7);display:block;font-family:var(--f-sans);font-weight:600;margin-top:2px}
-  #player .close{background:rgba(255,255,255,.16);border:none;color:#fff;width:40px;height:40px;border-radius:50%;
-    font-size:1.3rem;cursor:pointer;flex:none}
+  /* ---- rutina ilustrada (texto + imágenes) ---- */
+  #routine{position:absolute;inset:0;z-index:70;background:var(--paper);display:none;flex-direction:column;animation:rise .3s ease}
+  #routine.on{display:flex}
+  .rt-top{display:flex;align-items:center;gap:14px;padding:16px 18px;border-bottom:1px solid var(--line);background:var(--surface)}
+  .rt-close{background:var(--surface-2);border:1px solid var(--line);color:var(--ink);width:42px;height:42px;border-radius:50%;
+    font-size:1.4rem;cursor:pointer;flex:none;line-height:1}
+  .rt-top h3{font-family:var(--f-serif);font-size:1.28rem;font-weight:600;line-height:1.15}
+  .rt-top small{color:var(--muted);font-weight:600;display:block;margin-top:2px}
+  .rt-scroll{flex:1;overflow-y:auto;padding:16px 16px 8px}
+  .rt-step{background:var(--surface);border:1px solid var(--line);border-radius:20px;padding:16px;margin-bottom:14px}
+  .rt-fig{height:150px;border-radius:14px;background:var(--brand-tint);display:grid;place-items:center;color:var(--brand);margin-bottom:14px}
+  .rt-fig svg{height:122px;width:auto}
+  .rt-n{font-size:.72rem;font-weight:800;letter-spacing:.09em;text-transform:uppercase;color:var(--accent)}
+  .rt-step h4{font-family:var(--f-serif);font-size:1.24rem;font-weight:600;margin:3px 0 0}
+  .rt-step p{margin:7px 0 0;font-size:1.04rem;line-height:1.5;color:var(--ink-soft)}
+  .rt-dur{display:inline-block;margin-top:12px;font-size:.85rem;font-weight:700;color:var(--brand);
+    background:var(--brand-tint);padding:5px 12px;border-radius:999px}
+  .rt-foot{padding:14px 18px calc(14px + env(safe-area-inset-bottom));border-top:1px solid var(--line);background:var(--surface)}
+  .rt-foot .cta{margin-top:0}
 
   .foot-note{text-align:center;color:var(--muted);font-size:.8rem;margin-top:26px;line-height:1.5}
 
@@ -371,7 +371,7 @@
         <div class="poster">
           <canvas data-flow="1"></canvas>
           <span class="meta">Semana 1 · Día 3</span>
-          <button class="play-btn" onclick="abrirVideo('El flujo del agua','9 min · Movilidad de hombros')" aria-label="Reproducir sesión de hoy">
+          <button class="play-btn" onclick="abrirRutina('El flujo del agua','9 min · Movilidad de hombros')" aria-label="Reproducir sesión de hoy">
             <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
           </button>
         </div>
@@ -381,7 +381,7 @@
         </div>
       </div>
 
-      <button class="cta" onclick="abrirVideo('El flujo del agua','9 min · Movilidad de hombros')">
+      <button class="cta" onclick="abrirRutina('El flujo del agua','9 min · Movilidad de hombros')">
         <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
         Empezar sesión
       </button>
@@ -401,7 +401,7 @@
         </div>
       </div>
 
-      <p class="foot-note">Prototipo · datos de ejemplo. Los videos reales se cargan después.</p>
+      <p class="foot-note">Prototipo · rutina ilustrada de ejemplo. Las imágenes finales se generan después.</p>
     </section>
 
     <!-- PROGRAMA -->
@@ -559,17 +559,15 @@
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 4-6 8-6s8 2 8 6"/></svg>Perfil</button>
   </nav>
 
-  <!-- ============ VIDEO PLAYER ============ -->
-  <div id="player">
-    <div class="ptop">
-      <div><h3 id="pvtitle">El flujo del agua</h3><small id="pvsub">9 min</small></div>
-      <button class="close" onclick="cerrarVideo()" aria-label="Cerrar">×</button>
+  <!-- ============ RUTINA ILUSTRADA ============ -->
+  <div id="routine">
+    <div class="rt-top">
+      <button class="rt-close" onclick="cerrarRutina()" aria-label="Cerrar">×</button>
+      <div><h3 id="rttitle">El flujo del agua</h3><small id="rtsub">9 min · 5 movimientos</small></div>
     </div>
-    <div class="stage">
-      <canvas data-flow="2"></canvas>
-      <button class="big" aria-label="Reproducir demo"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></button>
-      <div class="demo">Vista previa · acá va tu video real</div>
-      <div class="pbar"><i></i></div>
+    <div class="rt-scroll" id="rtsteps"></div>
+    <div class="rt-foot">
+      <button class="cta" onclick="hechaRutina()">✓ Marcar como hecha</button>
     </div>
   </div>
 
@@ -620,7 +618,7 @@
     if(locked) el.disabled = true;
     el.innerHTML = `<div class="thumb"><canvas data-flow="s${x.n}"></canvas><div class="n">${x.n}</div></div>
       <div class="info"><h3>${x.t}</h3><p>${x.d}</p></div>${badge}`;
-    if(!locked) el.onclick = ()=>abrirVideo(x.t,x.d);
+    if(!locked) el.onclick = ()=>abrirRutina(x.t,x.d);
     week1.appendChild(el);
   });
 
@@ -634,12 +632,40 @@
   }
   function entrar(){ document.getElementById('login').classList.add('hide'); }
   function salir(){ document.getElementById('login').classList.remove('hide'); }
-  function abrirVideo(t,s){
-    document.getElementById('pvtitle').textContent=t;
-    document.getElementById('pvsub').textContent=s;
-    document.getElementById('player').classList.add('on');
+  /* ---- figuras (persona sentada haciendo el movimiento) ---- */
+  const svgBase = a => `<svg viewBox="0 0 120 132" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M28 74v48M92 74v48M28 100h64M28 74h64" opacity=".32"/>
+    ${a.head||'<circle cx="60" cy="26" r="12"/>'}
+    <path d="M60 38v34"/>
+    <path d="M60 72l-14 8v22M60 72l14 8v22"/>
+    ${a.arms}
+  </svg>`;
+  const FIG = {
+    rest:  svgBase({arms:'<path d="M60 46l-16 24M60 46l16 24"/>'}),
+    shrug: svgBase({arms:'<path d="M60 46l-16 6-1 15M60 46l16 6 1 15"/>'}),
+    wave:  svgBase({arms:'<path d="M60 46l-22 -6M60 46l22 -6"/>'}),
+    neck:  svgBase({head:'<circle cx="51" cy="26" r="12"/>', arms:'<path d="M60 46l-16 24M60 46l16 24"/>'}),
+    chest: svgBase({arms:'<path d="M60 46l-13 15 13 3M60 46l13 15-13 3"/>'}),
+  };
+  const rutinaSteps = [
+    {n:"Paso 1 · Respirá", t:"Postura inicial", p:"Sentate derecha, con los pies bien apoyados y las manos sobre los muslos. Cerrá los ojos y respirá hondo 3 veces.", d:"1 min", fig:FIG.rest},
+    {n:"Paso 2 · Hombros", t:"Círculos de hombros", p:"Subí los hombros hacia las orejas al inhalar, y bajalos despacio al exhalar. Repetí 5 veces, sin apuro.", d:"2 min", fig:FIG.shrug},
+    {n:"Paso 3 · Brazos", t:"El flujo del agua", p:"Levantá los brazos lentos, como olas que suben y bajan. Seguí el movimiento con la mirada. 6 veces.", d:"3 min", fig:FIG.wave},
+    {n:"Paso 4 · Cuello", t:"Cuello suave", p:"Girá la cabeza despacio hacia un lado, volvé al centro y girá al otro. 4 veces por lado.", d:"2 min", fig:FIG.neck},
+    {n:"Paso 5 · Cierre", t:"Respiración final", p:"Llevá las manos al pecho, cerrá los ojos y hacé 3 respiraciones profundas. Sentí la calma en todo el cuerpo.", d:"1 min", fig:FIG.chest},
+  ];
+  function abrirRutina(t,s){
+    document.getElementById('rttitle').textContent=t;
+    document.getElementById('rtsub').textContent=(s||'')+' · '+rutinaSteps.length+' movimientos';
+    document.getElementById('rtsteps').innerHTML = rutinaSteps.map(x=>
+      `<div class="rt-step"><div class="rt-fig">${x.fig}</div>
+       <span class="rt-n">${x.n}</span><h4>${x.t}</h4><p>${x.p}</p>
+       <span class="rt-dur">⏱️ ${x.d}</span></div>`).join('');
+    document.getElementById('rtsteps').scrollTop=0;
+    document.getElementById('routine').classList.add('on');
   }
-  function cerrarVideo(){ document.getElementById('player').classList.remove('on'); }
+  function cerrarRutina(){ document.getElementById('routine').classList.remove('on'); }
+  function hechaRutina(){ cerrarRutina(); showToast('¡Bien hecho, María! Sesión completada 🌿'); }
   function abrirPaywall(){ document.getElementById('paywall-modal').classList.add('on'); }
   function cerrarPaywall(){ document.getElementById('paywall-modal').classList.remove('on'); }
   function irCheckout(){ showToast('Acá se conecta tu checkout de Shopify 🛒'); }
