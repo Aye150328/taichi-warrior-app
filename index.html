@@ -1,0 +1,675 @@
+<title>Taichi Warrior · App de miembros</title>
+<style>
+  :root{
+    /* light theme tokens — sage-biased neutrals + jade brand + chi-gold accent */
+    --ground:#e9ede4;
+    --paper:#f6f7f2;
+    --surface:#ffffff;
+    --surface-2:#eef1e9;
+    --ink:#1a2620;
+    --ink-soft:#42514a;
+    --muted:#6c7a72;
+    --line:#d7ddd1;
+    --brand:#1f5f4e;
+    --brand-deep:#143d33;
+    --brand-tint:#e2ece7;
+    --accent:#d4972a;
+    --accent-soft:#f3e4c6;
+    --good:#2f8a5f;
+    --lock:#9aa89f;
+    --shadow:24px 40px 80px -40px rgba(20,61,51,.45);
+    --radius:22px;
+    --f-serif:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,"Times New Roman",serif;
+    --f-sans:system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  }
+  @media (prefers-color-scheme:dark){
+    :root{
+      --ground:#0c120f;
+      --paper:#111815;
+      --surface:#17211c;
+      --surface-2:#1e2a24;
+      --ink:#e9efe9;
+      --ink-soft:#b7c3bc;
+      --muted:#8b988f;
+      --line:#28352e;
+      --brand:#5fbba0;
+      --brand-deep:#3f8f79;
+      --brand-tint:#182620;
+      --accent:#e6b24d;
+      --accent-soft:#332a17;
+      --good:#5fbf8c;
+      --lock:#59665e;
+      --shadow:24px 40px 90px -44px rgba(0,0,0,.8);
+    }
+  }
+  :root[data-theme="light"]{
+    --ground:#e9ede4;--paper:#f6f7f2;--surface:#ffffff;--surface-2:#eef1e9;
+    --ink:#1a2620;--ink-soft:#42514a;--muted:#6c7a72;--line:#d7ddd1;
+    --brand:#1f5f4e;--brand-deep:#143d33;--brand-tint:#e2ece7;--accent:#d4972a;
+    --accent-soft:#f3e4c6;--good:#2f8a5f;--lock:#9aa89f;
+    --shadow:24px 40px 80px -40px rgba(20,61,51,.45);
+  }
+  :root[data-theme="dark"]{
+    --ground:#0c120f;--paper:#111815;--surface:#17211c;--surface-2:#1e2a24;
+    --ink:#e9efe9;--ink-soft:#b7c3bc;--muted:#8b988f;--line:#28352e;
+    --brand:#5fbba0;--brand-deep:#3f8f79;--brand-tint:#182620;--accent:#e6b24d;
+    --accent-soft:#332a17;--good:#5fbf8c;--lock:#59665e;
+    --shadow:24px 40px 90px -44px rgba(0,0,0,.8);
+  }
+
+  *{box-sizing:border-box}
+  html,body{margin:0}
+  body{
+    font-family:var(--f-sans);
+    color:var(--ink);
+    background:
+      radial-gradient(120% 80% at 50% -10%, color-mix(in srgb,var(--brand) 14%, var(--ground)) 0%, var(--ground) 60%);
+    min-height:100vh;
+    display:flex;align-items:center;justify-content:center;
+    padding:24px;
+    -webkit-font-smoothing:antialiased;
+  }
+
+  /* ---- phone frame (desktop) ---- */
+  .device{
+    width:100%;max-width:412px;
+    height:min(860px,92vh);
+    background:var(--paper);
+    border-radius:44px;
+    box-shadow:var(--shadow);
+    border:1px solid var(--line);
+    position:relative;overflow:hidden;
+    display:flex;flex-direction:column;
+  }
+  .notch{position:absolute;top:0;left:50%;transform:translateX(-50%);
+    width:130px;height:26px;background:var(--ground);border-radius:0 0 16px 16px;z-index:40;
+    border:1px solid var(--line);border-top:none}
+  @media (max-width:480px){
+    body{padding:0}
+    .device{max-width:none;height:100vh;height:100dvh;border-radius:0;border:none;box-shadow:none}
+    .notch{display:none}
+  }
+
+  .screen-wrap{flex:1;position:relative;overflow:hidden}
+  .screen{position:absolute;inset:0;overflow-y:auto;padding:44px 20px 108px;
+    display:none;animation:rise .34s cubic-bezier(.2,.7,.2,1)}
+  .screen.active{display:block}
+  @keyframes rise{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+  @media (prefers-reduced-motion:reduce){.screen{animation:none}}
+
+  /* ---- top bar ---- */
+  .topbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px}
+  .brand{display:flex;align-items:center;gap:9px;font-weight:700;letter-spacing:.02em}
+  .brand .glyph{width:30px;height:30px;flex:none}
+  .brand b{font-size:1.02rem}
+  .brand span{color:var(--muted);font-weight:600}
+  .phase{font-size:.72rem;font-weight:700;letter-spacing:.09em;text-transform:uppercase;
+    color:var(--brand);background:var(--brand-tint);padding:6px 11px;border-radius:999px}
+
+  h1,h2,h3{margin:0;text-wrap:balance}
+  .greet{font-family:var(--f-serif);font-size:1.9rem;line-height:1.12;font-weight:600;letter-spacing:-.01em}
+  .greet em{font-style:normal;color:var(--brand)}
+  .sub{color:var(--ink-soft);font-size:1.02rem;margin-top:6px;line-height:1.45}
+
+  .eyebrow{font-size:.74rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);
+    margin:26px 2px 12px;display:flex;align-items:center;gap:8px}
+  .eyebrow::after{content:"";flex:1;height:1px;background:var(--line)}
+
+  /* ---- cards ---- */
+  .card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);
+    padding:18px;box-shadow:0 1px 0 rgba(0,0,0,.02)}
+
+  /* today hero */
+  .today{position:relative;padding:0;overflow:hidden;color:#fff;border:none;
+    background:linear-gradient(150deg,var(--brand) 0%,var(--brand-deep) 100%)}
+  .today .poster{height:158px;position:relative;overflow:hidden}
+  .today canvas{position:absolute;inset:0;width:100%;height:100%;display:block;opacity:.9}
+  .today .meta{position:absolute;left:16px;top:14px;font-size:.74rem;font-weight:700;
+    letter-spacing:.09em;text-transform:uppercase;background:rgba(0,0,0,.28);
+    backdrop-filter:blur(4px);padding:6px 10px;border-radius:999px}
+  .today .body{padding:16px 18px 18px}
+  .today h2{font-family:var(--f-serif);font-size:1.5rem;font-weight:600;line-height:1.1}
+  .today .dur{opacity:.86;margin-top:6px;font-size:.98rem;display:flex;gap:6px;align-items:center}
+  .play-btn{position:absolute;right:16px;bottom:16px;transform:translateY(50%);z-index:5;
+    width:64px;height:64px;border-radius:50%;border:none;cursor:pointer;
+    background:var(--accent);color:#241a05;display:grid;place-items:center;
+    box-shadow:0 12px 26px -8px rgba(0,0,0,.5);transition:transform .18s}
+  .play-btn:hover{transform:translateY(50%) scale(1.06)}
+  .play-btn svg{width:26px;height:26px;margin-left:3px}
+
+  .cta{width:100%;margin-top:16px;border:none;cursor:pointer;font-family:var(--f-sans);
+    font-size:1.12rem;font-weight:700;color:#fff;background:var(--brand);
+    padding:17px;border-radius:16px;display:flex;align-items:center;justify-content:center;gap:10px;
+    transition:filter .18s,transform .12s}
+  .cta:hover{filter:brightness(1.07)}
+  .cta:active{transform:translateY(1px)}
+  .cta svg{width:20px;height:20px}
+
+  /* stat row */
+  .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:11px;margin-top:14px}
+  .stat{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:14px 10px;text-align:center}
+  .stat .n{font-size:1.7rem;font-weight:800;line-height:1;font-variant-numeric:tabular-nums;letter-spacing:-.02em}
+  .stat .n small{font-size:.8rem;font-weight:700;color:var(--muted)}
+  .stat .l{font-size:.76rem;color:var(--muted);margin-top:6px;font-weight:600}
+  .stat.accent .n{color:var(--accent)}
+  .stat.brand .n{color:var(--brand)}
+
+  /* chi tip */
+  .tip{display:flex;gap:13px;align-items:flex-start;background:var(--accent-soft);
+    border:1px solid color-mix(in srgb,var(--accent) 30%,transparent);border-radius:16px;padding:15px 16px}
+  .tip .ic{font-size:1.5rem;line-height:1}
+  .tip b{display:block;font-size:.76rem;letter-spacing:.1em;text-transform:uppercase;color:var(--accent);margin-bottom:3px}
+  .tip p{margin:0;font-size:1rem;line-height:1.45;color:var(--ink)}
+
+  /* session list */
+  .sess{display:flex;align-items:center;gap:14px;background:var(--surface);border:1px solid var(--line);
+    border-radius:16px;padding:12px 14px;margin-bottom:10px;width:100%;text-align:left;cursor:pointer;
+    font-family:inherit;color:inherit;transition:border-color .15s,transform .12s}
+  .sess:hover{border-color:var(--brand)}
+  .sess:active{transform:scale(.99)}
+  .sess .thumb{width:58px;height:58px;border-radius:12px;flex:none;position:relative;overflow:hidden;
+    background:linear-gradient(150deg,var(--brand-deep),var(--brand))}
+  .sess .thumb canvas{position:absolute;inset:0;width:100%;height:100%}
+  .sess .thumb .n{position:absolute;inset:0;display:grid;place-items:center;color:#fff;font-weight:800;font-size:1.1rem;
+    text-shadow:0 1px 4px rgba(0,0,0,.4)}
+  .sess .info{flex:1;min-width:0}
+  .sess .info h3{font-size:1.04rem;font-weight:700;line-height:1.2}
+  .sess .info p{margin:3px 0 0;font-size:.86rem;color:var(--muted)}
+  .sess .badge{font-size:.72rem;font-weight:700;padding:5px 9px;border-radius:999px;flex:none}
+  .badge.done{background:var(--brand-tint);color:var(--brand)}
+  .badge.now{background:var(--accent);color:#241a05}
+  .badge.lock{background:var(--surface-2);color:var(--lock)}
+  .sess.locked{opacity:.62;cursor:not-allowed}
+  .sess.locked:hover{border-color:var(--line)}
+
+  .weekhead{display:flex;align-items:center;justify-content:space-between;margin:22px 2px 12px}
+  .weekhead h3{font-size:1.16rem;font-weight:800}
+  .weekhead span{font-size:.82rem;color:var(--muted);font-weight:600}
+
+  /* progress */
+  .level{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:20px}
+  .level .row{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:12px}
+  .level .row b{font-family:var(--f-serif);font-size:1.35rem;font-weight:600}
+  .level .row span{font-size:.86rem;color:var(--muted);font-weight:600}
+  .bar{height:12px;border-radius:999px;background:var(--surface-2);overflow:hidden}
+  .bar i{display:block;height:100%;width:35%;border-radius:999px;
+    background:linear-gradient(90deg,var(--brand),var(--accent))}
+  .level small{display:block;margin-top:10px;color:var(--ink-soft);font-size:.9rem}
+  .week-dots{display:flex;justify-content:space-between;gap:6px;margin-top:6px}
+  .dot{flex:1;aspect-ratio:1;border-radius:12px;background:var(--surface-2);display:grid;place-items:center;
+    font-size:.8rem;font-weight:700;color:var(--muted);border:1px solid var(--line)}
+  .dot.on{background:var(--brand);color:#fff;border-color:transparent}
+  .dot.today{outline:2px solid var(--accent);outline-offset:2px;color:var(--accent)}
+
+  /* profile */
+  .prof{display:flex;align-items:center;gap:15px;margin-bottom:6px}
+  .avatar{width:66px;height:66px;border-radius:50%;flex:none;background:linear-gradient(150deg,var(--brand),var(--brand-deep));
+    display:grid;place-items:center;color:#fff;font-family:var(--f-serif);font-size:1.7rem;font-weight:600}
+  .prof h2{font-family:var(--f-serif);font-size:1.5rem;font-weight:600}
+  .prof p{margin:3px 0 0;color:var(--muted);font-size:.95rem}
+  .rowlist{margin-top:16px;border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;background:var(--surface)}
+  .rowlist button{width:100%;display:flex;align-items:center;gap:13px;padding:16px 18px;background:none;border:none;
+    border-bottom:1px solid var(--line);font-family:inherit;font-size:1.02rem;color:var(--ink);cursor:pointer;text-align:left}
+  .rowlist button:last-child{border-bottom:none}
+  .rowlist button:hover{background:var(--surface-2)}
+  .rowlist button .ic{width:22px;text-align:center}
+  .rowlist button .arr{margin-left:auto;color:var(--muted)}
+  .plan-pill{display:inline-flex;align-items:center;gap:7px;background:var(--brand-tint);color:var(--brand);
+    font-weight:700;font-size:.86rem;padding:7px 13px;border-radius:999px;margin-top:14px}
+
+  /* bottom nav */
+  .tabbar{position:absolute;left:0;right:0;bottom:0;height:76px;background:color-mix(in srgb,var(--paper) 86%,transparent);
+    backdrop-filter:blur(16px);border-top:1px solid var(--line);display:flex;z-index:30;padding-bottom:env(safe-area-inset-bottom)}
+  .tab{flex:1;background:none;border:none;cursor:pointer;color:var(--muted);font-family:inherit;
+    display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;font-size:.72rem;font-weight:700;padding-top:8px}
+  .tab svg{width:24px;height:24px}
+  .tab.active{color:var(--brand)}
+  .tab.active svg{transform:translateY(-1px)}
+
+  /* ---- login ---- */
+  #login{position:absolute;inset:0;z-index:60;background:
+    radial-gradient(130% 90% at 50% 8%, var(--brand) 0%, var(--brand-deep) 68%);
+    color:#fff;display:flex;flex-direction:column;justify-content:center;gap:20px;padding:40px 30px;text-align:center;
+    transition:opacity .5s,transform .5s}
+  #login.hide{opacity:0;transform:translateY(-16px);pointer-events:none}
+  #login .glyph{width:78px;height:78px;margin:0 auto}
+  #login h1{font-family:var(--f-serif);font-size:2.15rem;font-weight:600;line-height:1.08}
+  #login p{margin:0;opacity:.85;font-size:1.05rem;line-height:1.5;max-width:30ch;margin-inline:auto}
+  #login .field{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.28);border-radius:14px;
+    padding:15px 16px;color:#fff;font-size:1.05rem;font-family:inherit}
+  #login .field::placeholder{color:rgba(255,255,255,.6)}
+  #login .enter{background:var(--accent);color:#241a05;border:none;border-radius:14px;padding:17px;font-size:1.12rem;
+    font-weight:800;cursor:pointer;font-family:inherit;transition:transform .12s,filter .15s}
+  #login .enter:hover{filter:brightness(1.06)}
+  #login .enter:active{transform:translateY(1px)}
+  #login .foot{font-size:.85rem;opacity:.7}
+
+  /* ---- video modal ---- */
+  #player{position:absolute;inset:0;z-index:70;background:#05100c;color:#fff;display:none;flex-direction:column}
+  #player.on{display:flex;animation:rise .3s ease}
+  #player .stage{flex:1;position:relative;overflow:hidden;display:grid;place-items:center}
+  #player canvas{position:absolute;inset:0;width:100%;height:100%;opacity:.75}
+  #player .big{position:relative;z-index:2;width:92px;height:92px;border-radius:50%;border:none;cursor:pointer;
+    background:rgba(255,255,255,.16);backdrop-filter:blur(6px);color:#fff;display:grid;place-items:center;
+    border:2px solid rgba(255,255,255,.5)}
+  #player .big svg{width:38px;height:38px;margin-left:4px}
+  #player .demo{position:absolute;z-index:2;bottom:96px;left:50%;transform:translateX(-50%);
+    background:rgba(0,0,0,.5);padding:9px 15px;border-radius:999px;font-size:.84rem;white-space:nowrap}
+  #player .pbar{position:absolute;left:16px;right:16px;bottom:70px;z-index:2;height:5px;border-radius:9px;background:rgba(255,255,255,.25)}
+  #player .pbar i{display:block;height:100%;width:22%;background:var(--accent);border-radius:9px}
+  #player .ptop{position:absolute;top:0;left:0;right:0;z-index:3;padding:20px;display:flex;align-items:center;justify-content:space-between;
+    background:linear-gradient(180deg,rgba(0,0,0,.5),transparent)}
+  #player .ptop h3{font-family:var(--f-serif);font-size:1.2rem;font-weight:600}
+  #player .ptop small{color:rgba(255,255,255,.7);display:block;font-family:var(--f-sans);font-weight:600;margin-top:2px}
+  #player .close{background:rgba(255,255,255,.16);border:none;color:#fff;width:40px;height:40px;border-radius:50%;
+    font-size:1.3rem;cursor:pointer;flex:none}
+
+  .foot-note{text-align:center;color:var(--muted);font-size:.8rem;margin-top:26px;line-height:1.5}
+
+  /* ---- freemium / paywall ---- */
+  .badge.free{background:var(--brand-tint);color:var(--brand)}
+  .thumb.nut{background:var(--brand-tint);display:grid;place-items:center;font-size:1.6rem}
+  .free-tag{font-size:.66rem;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--good);
+    background:color-mix(in srgb,var(--good) 16%,transparent);padding:3px 9px;border-radius:999px;vertical-align:middle;margin-left:7px}
+  .weekhead.locked-head h3{color:var(--muted)}
+  .mem{color:var(--accent);font-weight:700}
+  .sess.locked{cursor:pointer}
+  .sess.locked:hover{border-color:var(--accent);opacity:.85}
+  .paywall{background:linear-gradient(155deg,var(--brand) 0%,var(--brand-deep) 100%);color:#fff;border-radius:var(--radius);
+    padding:24px 20px;text-align:center;margin:8px 0;box-shadow:0 20px 44px -24px rgba(20,61,51,.65)}
+  .paywall .pw-ic{font-size:2.1rem}
+  .paywall h3{font-family:var(--f-serif);font-size:1.42rem;font-weight:600;margin-top:6px}
+  .paywall p{margin:9px auto 0;font-size:1rem;line-height:1.5;opacity:.92;max-width:32ch}
+  .paywall .cta{background:var(--accent);color:#241a05}
+  .plan-pill.free{background:color-mix(in srgb,var(--accent) 18%,transparent);color:var(--accent)}
+  .pw-mini{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:14px;cursor:pointer;
+    background:linear-gradient(150deg,var(--brand),var(--brand-deep));color:#fff;border-radius:16px;padding:16px 18px;
+    transition:transform .12s}
+  .pw-mini:hover{transform:translateY(-1px)}
+  .pw-mini b{font-size:1.06rem}
+  .pw-mini small{display:block;opacity:.86;font-size:.85rem;margin-top:2px;line-height:1.35}
+  .pw-mini>span{font-size:1.5rem;opacity:.8;flex:none}
+
+  #paywall-modal{position:absolute;inset:0;z-index:75;background:var(--paper);display:none;flex-direction:column;
+    overflow-y:auto;animation:rise .3s ease}
+  #paywall-modal.on{display:flex}
+  .pw-close{position:absolute;top:16px;right:16px;z-index:5;background:var(--surface-2);border:1px solid var(--line);
+    color:var(--ink);width:42px;height:42px;border-radius:50%;font-size:1.4rem;cursor:pointer;line-height:1}
+  .pw-body{padding:60px 24px 40px;text-align:center;max-width:420px;margin:0 auto;width:100%}
+  .pw-hero{width:78px;height:78px;margin:0 auto;border-radius:50%;
+    background:linear-gradient(150deg,var(--brand),var(--brand-deep));display:grid;place-items:center;font-size:2.3rem}
+  .pw-body h2{font-family:var(--f-serif);font-size:1.75rem;font-weight:600;margin-top:18px}
+  .pw-body>p{color:var(--ink-soft);font-size:1.05rem;line-height:1.5;margin:8px auto 0;max-width:32ch}
+  .pw-list{list-style:none;padding:0;margin:24px 0;text-align:left;display:flex;flex-direction:column;gap:13px}
+  .pw-list li{font-size:1.04rem;color:var(--ink);font-weight:500}
+  .pw-plans{margin:14px 0 20px}
+  .pw-plan{display:flex;align-items:center;justify-content:space-between;border:2px solid var(--brand);
+    border-radius:16px;padding:17px 18px;background:var(--brand-tint);position:relative;text-align:left}
+  .pw-plan.popular::after{content:"Recomendado";position:absolute;top:-11px;left:50%;transform:translateX(-50%);
+    background:var(--accent);color:#241a05;font-size:.68rem;font-weight:800;letter-spacing:.06em;text-transform:uppercase;
+    padding:4px 12px;border-radius:999px;white-space:nowrap}
+  .pw-plan b{font-size:1.1rem}
+  .pw-plan small{display:block;color:var(--muted);font-size:.82rem;margin-top:2px}
+  .pw-price{text-align:right;white-space:nowrap}
+  .pw-price s{color:var(--muted);font-size:.9rem}
+  .pw-price b{font-size:1.5rem;color:var(--brand);font-variant-numeric:tabular-nums}
+  .pw-price span{color:var(--muted);font-size:.85rem}
+  .pw-buy{width:100%;border:none;cursor:pointer;font-family:var(--f-sans);font-size:1.14rem;font-weight:800;
+    color:#241a05;background:var(--accent);padding:18px;border-radius:16px;transition:filter .15s,transform .12s}
+  .pw-buy:hover{filter:brightness(1.06)}
+  .pw-buy:active{transform:translateY(1px)}
+  .pw-foot{margin-top:14px;color:var(--muted);font-size:.82rem;line-height:1.5}
+
+  #toast{position:absolute;bottom:96px;left:50%;transform:translateX(-50%) translateY(20px);z-index:90;
+    background:var(--ink);color:var(--paper);padding:13px 20px;border-radius:999px;font-size:.95rem;font-weight:600;
+    opacity:0;transition:opacity .25s,transform .25s;pointer-events:none;white-space:nowrap;max-width:88%;
+    box-shadow:0 12px 30px -10px rgba(0,0,0,.4)}
+  #toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+</style>
+
+<div class="device" role="application" aria-label="App Taichi Warrior">
+  <div class="notch"></div>
+
+  <!-- ============ LOGIN ============ -->
+  <section id="login">
+    <svg class="glyph" viewBox="0 0 100 100" aria-hidden="true">
+      <circle cx="50" cy="50" r="46" fill="none" stroke="rgba(255,255,255,.35)" stroke-width="2"/>
+      <path d="M50 12a38 38 0 000 76a19 19 0 010-38a19 19 0 000-38z" fill="#fff"/>
+      <circle cx="50" cy="31" r="6.5" fill="#05100c"/>
+      <circle cx="50" cy="69" r="6.5" fill="#fff" stroke="#05100c" stroke-width="0"/>
+      <circle cx="50" cy="69" r="6.5" fill="none"/>
+      <circle cx="50" cy="69" r="6.5" fill="#05100c" opacity="0"/>
+    </svg>
+    <div>
+      <h1>Taichi&nbsp;Warrior</h1>
+      <p>Tu plan de Tai Chi en silla. Fuerza suave, desde casa.</p>
+    </div>
+    <input class="field" type="email" placeholder="Tu correo" aria-label="Correo" value="maria@email.com"/>
+    <input class="field" type="password" placeholder="Contraseña" aria-label="Contraseña" value="••••••"/>
+    <button class="enter" onclick="entrar()">Entrar a mi plan</button>
+    <div class="foot">Acceso enviado a tu correo tras la compra</div>
+  </section>
+
+  <!-- ============ SCREENS ============ -->
+  <div class="screen-wrap">
+
+    <!-- HOY -->
+    <section class="screen active" id="hoy">
+      <div class="topbar">
+        <div class="brand">
+          <svg class="glyph" viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="46" fill="none" stroke="var(--brand)" stroke-width="4"/><path d="M50 12a38 38 0 000 76a19 19 0 010-38a19 19 0 000-38z" fill="var(--brand)"/><circle cx="50" cy="31" r="6" fill="var(--paper)"/><circle cx="50" cy="69" r="6" fill="var(--brand)"/></svg>
+          <b>Taichi</b><span>Warrior</span>
+        </div>
+        <div class="phase">Semana 1 · Día 3</div>
+      </div>
+
+      <h1 class="greet">Buen día, <em>María</em>.</h1>
+      <p class="sub">Tu chi de hoy te espera. 9 minutos, sentada, sin apuro.</p>
+
+      <div class="eyebrow">Tu sesión de hoy</div>
+      <div class="card today">
+        <div class="poster">
+          <canvas data-flow="1"></canvas>
+          <span class="meta">Semana 1 · Día 3</span>
+          <button class="play-btn" onclick="abrirVideo('El flujo del agua','9 min · Movilidad de hombros')" aria-label="Reproducir sesión de hoy">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+          </button>
+        </div>
+        <div class="body">
+          <h2>El flujo del agua</h2>
+          <div class="dur">🕉️ 9 min · Movilidad suave de hombros y cuello</div>
+        </div>
+      </div>
+
+      <button class="cta" onclick="abrirVideo('El flujo del agua','9 min · Movilidad de hombros')">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+        Empezar sesión
+      </button>
+
+      <div class="stats">
+        <div class="stat brand"><div class="n">2<small> días</small></div><div class="l">Racha</div></div>
+        <div class="stat accent"><div class="n">23<small> min</small></div><div class="l">Esta semana</div></div>
+        <div class="stat"><div class="n">2<small>/5</small></div><div class="l">Sesiones</div></div>
+      </div>
+
+      <div class="eyebrow">Respirá conmigo</div>
+      <div class="tip">
+        <div class="ic">🌬️</div>
+        <div>
+          <b>Tu chi de hoy</b>
+          <p>Inhalá contando 4, exhalá contando 6. Bajá los hombros y aflojá la mandíbula. Ese es el primer movimiento.</p>
+        </div>
+      </div>
+
+      <p class="foot-note">Prototipo · datos de ejemplo. Los videos reales se cargan después.</p>
+    </section>
+
+    <!-- PROGRAMA -->
+    <section class="screen" id="programa">
+      <div class="topbar">
+        <div class="brand"><b>Tu programa</b></div>
+        <div class="phase">Semana 1 gratis</div>
+      </div>
+      <h1 class="greet">Fuerte y <em>Tranquilo</em></h1>
+      <p class="sub">Personalizado para 60-69 años. Un paso por día, sin saltear.</p>
+
+      <div class="weekhead"><h3>Semana 1 <span class="free-tag">Gratis</span></h3><span>2 de 5 hechas</span></div>
+      <div id="week1"></div>
+
+      <!-- Paywall -->
+      <div class="paywall">
+        <div class="pw-ic">🔓</div>
+        <h3>Seguí tu transformación</h3>
+        <p>Tu semana gratis está lista. Desbloqueá las <b>semanas 2, 3 y 4</b> + rutinas nuevas cada mes con la membresía.</p>
+        <button class="cta" onclick="abrirPaywall()" style="margin-top:16px">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 1a5 5 0 00-5 5v3H6a2 2 0 00-2 2v9a2 2 0 002 2h12a2 2 0 002-2v-9a2 2 0 00-2-2h-1V6a5 5 0 00-5-5zm3 8H9V6a3 3 0 016 0z"/></svg>
+          Activar mi membresía
+        </button>
+      </div>
+
+      <div class="weekhead locked-head"><h3>Semana 2</h3><span class="mem">🔒 Membresía</span></div>
+      <button class="sess locked" onclick="abrirPaywall()">
+        <div class="thumb"><div class="n">6</div></div>
+        <div class="info"><h3>Raíces en la tierra</h3><p>Equilibrio y piernas · 10 min</p></div>
+        <span class="badge lock">🔒</span>
+      </button>
+      <button class="sess locked" onclick="abrirPaywall()">
+        <div class="thumb"><div class="n">7</div></div>
+        <div class="info"><h3>La grulla despliega las alas</h3><p>Brazos y respiración · 11 min</p></div>
+        <span class="badge lock">🔒</span>
+      </button>
+
+      <div class="weekhead locked-head"><h3>Semanas 3 y 4</h3><span class="mem">🔒 Membresía</span></div>
+      <button class="sess locked" onclick="abrirPaywall()">
+        <div class="thumb"><div class="n">+</div></div>
+        <div class="info"><h3>10 sesiones más</h3><p>Progresión completa · hasta 12 min</p></div>
+        <span class="badge lock">🔒</span>
+      </button>
+
+      <p class="foot-note">Semana 1 gratis · La membresía desbloquea las 4 semanas + rutinas nuevas cada mes</p>
+    </section>
+
+    <!-- PROGRESO -->
+    <section class="screen" id="progreso">
+      <div class="topbar"><div class="brand"><b>Tu progreso</b></div></div>
+      <h1 class="greet">Vas <em>muy bien</em>, María.</h1>
+      <p class="sub">Dos días seguidos. La constancia es el verdadero maestro.</p>
+
+      <div class="eyebrow">Nivel de Tai Chi</div>
+      <div class="level">
+        <div class="row"><b>Principiante</b><span>Meta: Intermedio</span></div>
+        <div class="bar"><i></i></div>
+        <small>Te faltan <b>3 sesiones</b> para subir de nivel.</small>
+      </div>
+
+      <div class="eyebrow">Esta semana</div>
+      <div class="week-dots">
+        <div class="dot on">L</div><div class="dot on">M</div>
+        <div class="dot today">M</div><div class="dot">J</div>
+        <div class="dot">V</div><div class="dot">S</div><div class="dot">D</div>
+      </div>
+
+      <div class="stats" style="margin-top:22px">
+        <div class="stat brand"><div class="n">23<small>m</small></div><div class="l">Total</div></div>
+        <div class="stat accent"><div class="n">2</div><div class="l">Sesiones</div></div>
+        <div class="stat"><div class="n">🔥2</div><div class="l">Racha</div></div>
+      </div>
+
+      <div class="eyebrow">Cómo te sentís</div>
+      <div class="tip">
+        <div class="ic">🌿</div>
+        <div><b>Tu bienestar</b><p>Registrá cómo te sentís después de cada sesión. Vas a ver cómo baja la rigidez y sube la energía semana a semana.</p></div>
+      </div>
+    </section>
+
+    <!-- NUTRICIÓN -->
+    <section class="screen" id="nutricion">
+      <div class="topbar"><div class="brand"><b>Nutrición</b></div><div class="phase">Planes escritos</div></div>
+      <h1 class="greet">Comé para tu <em>energía</em></h1>
+      <p class="sub">Planes simples, sin dietas locas. Pensados para después de los 50.</p>
+
+      <div class="eyebrow">Gratis para empezar</div>
+      <button class="sess" onclick="abrirLectura('5 hábitos que cambian tu energía')">
+        <div class="thumb nut">🌱</div>
+        <div class="info"><h3>5 hábitos que cambian tu energía</h3><p>Guía de arranque · 4 min de lectura</p></div>
+        <span class="badge free">▶ Leer</span>
+      </button>
+
+      <div class="eyebrow">Planes de la membresía</div>
+      <button class="sess locked" onclick="abrirPaywall()">
+        <div class="thumb nut">🥗</div>
+        <div class="info"><h3>Plan antiinflamatorio · 7 días</h3><p>Menú completo + lista de compras</p></div>
+        <span class="badge lock">🔒</span>
+      </button>
+      <button class="sess locked" onclick="abrirPaywall()">
+        <div class="thumb nut">🦴</div>
+        <div class="info"><h3>Comé para tus articulaciones</h3><p>Alimentos que bajan la rigidez</p></div>
+        <span class="badge lock">🔒</span>
+      </button>
+      <button class="sess locked" onclick="abrirPaywall()">
+        <div class="thumb nut">💧</div>
+        <div class="info"><h3>Hidratación y descanso</h3><p>Rutina diaria simple para más energía</p></div>
+        <span class="badge lock">🔒</span>
+      </button>
+
+      <p class="foot-note">Los planes escritos se leen dentro de la app o se imprimen en casa.</p>
+    </section>
+
+    <!-- PERFIL -->
+    <section class="screen" id="perfil">
+      <div class="topbar"><div class="brand"><b>Mi cuenta</b></div></div>
+      <div class="prof">
+        <div class="avatar">M</div>
+        <div><h2>María</h2><p>60-69 años · Objetivo: Fuerte y Tranquilo</p></div>
+      </div>
+      <span class="plan-pill free">◐ Semana 1 gratis</span>
+
+      <div class="pw-mini" onclick="abrirPaywall()">
+        <div><b>Activá tu membresía</b><small>Desbloqueá las 4 semanas + rutinas nuevas cada mes</small></div>
+        <span>›</span>
+      </div>
+
+      <div class="eyebrow">Tu plan</div>
+      <div class="rowlist">
+        <button onclick="abrirPaywall()"><span class="ic">🔓</span> Activar membresía <span class="arr">›</span></button>
+        <button><span class="ic">📅</span> Horario de recordatorio <span class="arr">›</span></button>
+        <button><span class="ic">⭐</span> Dejar una reseña <span class="arr">›</span></button>
+      </div>
+
+      <div class="eyebrow">Ayuda</div>
+      <div class="rowlist">
+        <button><span class="ic">❓</span> Preguntas frecuentes <span class="arr">›</span></button>
+        <button onclick="salir()"><span class="ic">↩️</span> Cerrar sesión <span class="arr">›</span></button>
+      </div>
+      <p class="foot-note">Taichi Warrior · versión prototipo</p>
+    </section>
+  </div>
+
+  <!-- ============ TAB BAR ============ -->
+  <nav class="tabbar">
+    <button class="tab active" data-t="hoy" onclick="irA('hoy',this)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-8 9 8"/><path d="M5 10v10h14V10"/></svg>Hoy</button>
+    <button class="tab" data-t="programa" onclick="irA('programa',this)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="3"/><path d="M8 9h8M8 13h6"/></svg>Programa</button>
+    <button class="tab" data-t="nutricion" onclick="irA('nutricion',this)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3v9a4 4 0 008 0V3"/><path d="M10 3v18"/><path d="M18 3c-1.5 2-2 4-2 6s.5 3 2 3v9"/></svg>Nutrición</button>
+    <button class="tab" data-t="progreso" onclick="irA('progreso',this)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19V5"/><path d="M4 15l5-5 4 4 7-8"/></svg>Progreso</button>
+    <button class="tab" data-t="perfil" onclick="irA('perfil',this)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 4-6 8-6s8 2 8 6"/></svg>Perfil</button>
+  </nav>
+
+  <!-- ============ VIDEO PLAYER ============ -->
+  <div id="player">
+    <div class="ptop">
+      <div><h3 id="pvtitle">El flujo del agua</h3><small id="pvsub">9 min</small></div>
+      <button class="close" onclick="cerrarVideo()" aria-label="Cerrar">×</button>
+    </div>
+    <div class="stage">
+      <canvas data-flow="2"></canvas>
+      <button class="big" aria-label="Reproducir demo"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></button>
+      <div class="demo">Vista previa · acá va tu video real</div>
+      <div class="pbar"><i></i></div>
+    </div>
+  </div>
+
+  <!-- ============ PAYWALL / MEMBRESÍA ============ -->
+  <div id="paywall-modal">
+    <button class="pw-close" onclick="cerrarPaywall()" aria-label="Cerrar">×</button>
+    <div class="pw-body">
+      <div class="pw-hero">🧘</div>
+      <h2>Membresía Taichi Warrior</h2>
+      <p>Seguí desbloqueando fuerza y calma, a tu ritmo, desde tu silla.</p>
+      <ul class="pw-list">
+        <li>✓ Las 4 semanas completas · 20 sesiones guiadas</li>
+        <li>✓ Rutinas nuevas cada mes</li>
+        <li>✓ Seguimiento de tu progreso y nivel</li>
+        <li>✓ Cancelás cuando quieras</li>
+      </ul>
+      <div class="pw-plans">
+        <label class="pw-plan popular">
+          <div><b>Membresía mensual</b><small>Renovación automática</small></div>
+          <div class="pw-price"><s>$19,99</s> <b>$9,99</b><span>/mes</span></div>
+        </label>
+      </div>
+      <button class="pw-buy" onclick="irCheckout()">Activar membresía</button>
+      <div class="pw-foot">Pago seguro · Garantía de 30 días · Se conecta a tu checkout de Shopify</div>
+    </div>
+  </div>
+
+  <div id="toast" role="status"></div>
+</div>
+
+<script>
+  const sessions1 = [
+    {n:1,t:"Respiración y postura",d:"Fundamentos · 7 min",s:"done"},
+    {n:2,t:"Despertar las articulaciones",d:"Movilidad · 8 min",s:"done"},
+    {n:3,t:"El flujo del agua",d:"Hombros y cuello · 9 min",s:"now"},
+    {n:4,t:"Equilibrio sentado",d:"Core suave · 7 min",s:"free"},
+    {n:5,t:"Fuerza suave de brazos",d:"Tonificación · 10 min",s:"free"},
+  ];
+  const week1 = document.getElementById('week1');
+  sessions1.forEach(x=>{
+    const locked = x.s==='lock';
+    const badge = x.s==='done'?'<span class="badge done">✓ Hecha</span>'
+      : x.s==='now'?'<span class="badge now">▶ Hoy</span>'
+      : x.s==='free'?'<span class="badge free">▶ Ver</span>'
+      : '<span class="badge lock">🔒</span>';
+    const el = document.createElement('button');
+    el.className = 'sess'+(locked?' locked':'');
+    if(locked) el.disabled = true;
+    el.innerHTML = `<div class="thumb"><canvas data-flow="s${x.n}"></canvas><div class="n">${x.n}</div></div>
+      <div class="info"><h3>${x.t}</h3><p>${x.d}</p></div>${badge}`;
+    if(!locked) el.onclick = ()=>abrirVideo(x.t,x.d);
+    week1.appendChild(el);
+  });
+
+  function irA(id,btn){
+    document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+    document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+    btn.classList.add('active');
+    document.querySelector('.screen-wrap').scrollTop=0;
+    document.getElementById(id).scrollTop=0;
+  }
+  function entrar(){ document.getElementById('login').classList.add('hide'); }
+  function salir(){ document.getElementById('login').classList.remove('hide'); }
+  function abrirVideo(t,s){
+    document.getElementById('pvtitle').textContent=t;
+    document.getElementById('pvsub').textContent=s;
+    document.getElementById('player').classList.add('on');
+  }
+  function cerrarVideo(){ document.getElementById('player').classList.remove('on'); }
+  function abrirPaywall(){ document.getElementById('paywall-modal').classList.add('on'); }
+  function cerrarPaywall(){ document.getElementById('paywall-modal').classList.remove('on'); }
+  function irCheckout(){ showToast('Acá se conecta tu checkout de Shopify 🛒'); }
+  function abrirLectura(t){ showToast('Vista previa · acá va el plan escrito: '+t); }
+  function showToast(m){ const t=document.getElementById('toast'); t.textContent=m; t.classList.add('show');
+    clearTimeout(window._tt); window._tt=setTimeout(()=>t.classList.remove('show'),2600); }
+
+  /* ---- ambient "flowing chi" canvases: calm concentric ink ripples ---- */
+  function paint(cv){
+    const dpr=Math.min(devicePixelRatio||1,2);
+    const w=cv.clientWidth||cv.offsetWidth, h=cv.clientHeight||cv.offsetHeight;
+    if(!w||!h) return;
+    cv.width=w*dpr; cv.height=h*dpr;
+    const c=cv.getContext('2d'); c.scale(dpr,dpr);
+    const seed=(cv.dataset.flow||'1').split('').reduce((a,ch)=>a+ch.charCodeAt(0),0);
+    const g=c.createLinearGradient(0,0,w,h);
+    g.addColorStop(0,'#1f5f4e'); g.addColorStop(1,'#0e3329');
+    c.fillStyle=g; c.fillRect(0,0,w,h);
+    const cx=w*(.28+(seed%5)*.06), cy=h*.5;
+    for(let i=10;i>=1;i--){
+      c.beginPath();
+      c.arc(cx,cy,i*Math.max(w,h)*.09,0,Math.PI*2);
+      c.strokeStyle='rgba(212,151,42,'+(0.05+ (i%2?0.03:0))+')';
+      c.lineWidth=1.5; c.stroke();
+    }
+    c.beginPath(); c.arc(cx,cy,Math.max(w,h)*.07,0,Math.PI*2);
+    c.fillStyle='rgba(226,236,231,.14)'; c.fill();
+  }
+  function paintAll(){ document.querySelectorAll('canvas[data-flow]').forEach(paint); }
+  window.addEventListener('load',()=>setTimeout(paintAll,60));
+  window.addEventListener('resize',()=>{clearTimeout(window._rp);window._rp=setTimeout(paintAll,150)});
+  document.querySelectorAll('.tab').forEach(t=>t.addEventListener('click',()=>setTimeout(paintAll,80)));
+</script>
