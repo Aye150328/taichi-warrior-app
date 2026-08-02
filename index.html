@@ -266,6 +266,22 @@
     background:var(--brand-tint);padding:5px 12px;border-radius:999px}
   .rt-foot{padding:14px 18px calc(14px + env(safe-area-inset-bottom));border-top:1px solid var(--line);background:var(--surface)}
   .rt-foot .cta{margin-top:0}
+  /* recetas de nutricion */
+  #receta{position:absolute;inset:0;z-index:72;background:var(--paper);display:none;flex-direction:column;animation:rise .3s ease}
+  #receta.on{display:flex}
+  .rc-hero{height:180px;border-radius:18px;display:grid;place-items:center;font-size:5rem;margin-bottom:6px;
+    background:linear-gradient(150deg,var(--brand-tint),#e8ebe1)}
+  .rc-title{font-family:var(--f-serif);font-size:1.5rem;font-weight:600;margin:8px 0 0;line-height:1.15}
+  .rc-kcal{font-size:2rem;font-weight:800;color:var(--accent);margin:8px 0 0;font-variant-numeric:tabular-nums}
+  .rc-kcal small{font-size:.85rem;color:var(--muted);font-weight:700}
+  .rc-nutri{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:14px 0 2px}
+  .rc-chip{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:11px 4px;text-align:center}
+  .rc-chip b{display:block;font-size:1.05rem;font-weight:800;color:var(--brand);font-variant-numeric:tabular-nums}
+  .rc-chip span{font-size:.66rem;color:var(--muted);font-weight:600}
+  .rc-list{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:7px}
+  .rc-list li{font-size:1.02rem;line-height:1.4}
+  .rc-steps{margin:0;padding-left:22px;display:flex;flex-direction:column;gap:10px}
+  .rc-steps li{font-size:1.02rem;line-height:1.45}
 
   .foot-note{text-align:center;color:var(--muted);font-size:.8rem;margin-top:26px;line-height:1.5}
 
@@ -477,32 +493,44 @@
       <h1 class="greet">Comé para tu <em>energía</em></h1>
       <p class="sub">Planes simples, sin dietas locas. Pensados para después de los 50.</p>
 
-      <div class="eyebrow">Gratis para empezar</div>
-      <button class="sess" onclick="abrirLectura('5 hábitos que cambian tu energía')">
+      <div class="eyebrow">Guía gratis</div>
+      <button class="sess" onclick="abrirReceta('G01')">
         <div class="thumb nut">🌱</div>
-        <div class="info"><h3>5 hábitos que cambian tu energía</h3><p>Guía de arranque · 4 min de lectura</p></div>
+        <div class="info"><h3>5 hábitos que cambian tu energía</h3><p>Guía de arranque · 4 min</p></div>
         <span class="badge free">▶ Leer</span>
+      </button>
+
+      <div class="eyebrow">Combustible del Guerrero · Día 1 (muestra gratis)</div>
+      <button class="sess" onclick="abrirReceta('R01')">
+        <div class="thumb nut">🥣</div>
+        <div class="info"><h3>Desayuno · Yogur energético</h3><p>350 kcal · avena y frutos rojos</p></div>
+        <span class="badge free">▶ Ver</span>
+      </button>
+      <button class="sess" onclick="abrirReceta('R02')">
+        <div class="thumb nut">🐟</div>
+        <div class="info"><h3>Almuerzo · Merluza al horno</h3><p>450 kcal · con vegetales</p></div>
+        <span class="badge free">▶ Ver</span>
+      </button>
+      <button class="sess" onclick="abrirReceta('R03')">
+        <div class="thumb nut">🥑</div>
+        <div class="info"><h3>Merienda · Tostada de palta</h3><p>300 kcal · con huevo</p></div>
+        <span class="badge free">▶ Ver</span>
+      </button>
+      <button class="sess" onclick="abrirReceta('R04')">
+        <div class="thumb nut">🍲</div>
+        <div class="info"><h3>Cena · Sopa con pollo</h3><p>380 kcal · liviana</p></div>
+        <span class="badge free">▶ Ver</span>
       </button>
 
       <div class="eyebrow">Suscripción Nutrición · $9/mes</div>
       <button class="sess locked" onclick="abrirPaywall()">
-        <div class="thumb nut">🍽️</div>
-        <div class="info"><h3>Combustible del Guerrero</h3><p>4 comidas al día para recuperar tu energía · todo el mes</p></div>
+        <div class="thumb nut">📅</div>
+        <div class="info"><h3>Días 2 a 30 · Combustible del Guerrero</h3><p>4 comidas al día, todo el mes</p></div>
         <span class="badge lock">🔒</span>
       </button>
       <button class="sess locked" onclick="abrirPaywall()">
         <div class="thumb nut">🥗</div>
-        <div class="info"><h3>Plan antiinflamatorio · 7 días</h3><p>Menú completo + lista de compras</p></div>
-        <span class="badge lock">🔒</span>
-      </button>
-      <button class="sess locked" onclick="abrirPaywall()">
-        <div class="thumb nut">🦴</div>
-        <div class="info"><h3>Comé para tus articulaciones</h3><p>Alimentos que bajan la rigidez</p></div>
-        <span class="badge lock">🔒</span>
-      </button>
-      <button class="sess locked" onclick="abrirPaywall()">
-        <div class="thumb nut">💧</div>
-        <div class="info"><h3>Hidratación y descanso</h3><p>Rutina diaria simple para más energía</p></div>
+        <div class="info"><h3>Plan antiinflamatorio · 7 días</h3><p>Para bajar la rigidez</p></div>
         <span class="badge lock">🔒</span>
       </button>
 
@@ -562,6 +590,24 @@
     <div class="rt-scroll" id="rtsteps"></div>
     <div class="rt-foot">
       <button class="cta" onclick="hechaRutina()">✓ Marcar como hecha</button>
+    </div>
+  </div>
+
+  <!-- ============ RECETA ============ -->
+  <div id="receta">
+    <div class="rt-top">
+      <button class="rt-close" onclick="cerrarReceta()" aria-label="Cerrar">×</button>
+      <div><h3 id="rcmeal">Desayuno</h3><small id="rckcal">350 kcal</small></div>
+    </div>
+    <div class="rt-scroll">
+      <div class="rc-hero"><span id="rcemoji">🥣</span></div>
+      <h2 class="rc-title" id="rctitle">Receta</h2>
+      <div class="rc-kcal" id="rckcalbig">350 <small>kcal</small></div>
+      <div class="rc-nutri" id="rcnutri"></div>
+      <div class="eyebrow" id="rcEbIng">Ingredientes</div>
+      <ul class="rc-list" id="rcing"></ul>
+      <div class="eyebrow" id="rcEbPrep">Preparación</div>
+      <ol class="rc-steps" id="rcprep"></ol>
     </div>
   </div>
 
@@ -697,6 +743,52 @@
   function cerrarPaywall(){ document.getElementById('paywall-modal').classList.remove('on'); }
   function irCheckout(){ window.location.href = SHOPIFY_SUB_URL; }
   function abrirLectura(t){ showToast('Vista previa · acá va el plan escrito: '+t); }
+  const RECETAS = {
+    G01:{meal:"Guía gratis",t:"5 hábitos que cambian tu energía",kcal:null,emoji:"🌱",ing:[],nutri:{},
+      prep:["Empezá el día con proteína (huevo, queso o yogur): te sostiene sin hambre y cuida tu músculo.",
+        "Tomá agua antes de tener sed: un vaso al despertar y otro antes de cada comida.",
+        "Sumá color al plato: que la mitad sean verduras y frutas.",
+        "Movimiento suave todos los días: tus rutinas de Tai Chi en silla ya cuentan.",
+        "Cená liviano y temprano: mejora el sueño y la energía del día siguiente."]},
+    R01:{meal:"Desayuno",t:"Yogur energético con avena",kcal:350,emoji:"🥣",
+      ing:["Yogur natural, 200 g","Avena, 40 g","Arándanos o frutos rojos, 50 g","Nueces, 15 g","1 cdta de miel"],
+      prep:["Poné el yogur en un bol.","Sumá la avena y mezclá.","Agregá los arándanos y las nueces arriba.","Terminá con un hilo de miel."],
+      nutri:{"Proteína":"15 g","Carbos":"45 g","Grasas":"12 g","Fibra":"6 g"}},
+    R02:{meal:"Almuerzo",t:"Merluza al horno con vegetales",kcal:450,emoji:"🐟",
+      ing:["Filet de merluza, 180 g","Calabaza, 150 g","Brócoli, 100 g","1 cda de aceite de oliva","Jugo de limón y sal"],
+      prep:["Precalentá el horno a 200°C.","Cortá la calabaza y el brócoli y ponelos en una fuente.","Apoyá la merluza arriba, rociá con aceite y limón.","Horneá 20 minutos."],
+      nutri:{"Proteína":"38 g","Carbos":"25 g","Grasas":"15 g","Fibra":"7 g"}},
+    R03:{meal:"Merienda",t:"Tostada de palta y huevo",kcal:300,emoji:"🥑",
+      ing:["2 rebanadas de pan integral","1/2 palta","1 huevo","Sal y pimienta"],
+      prep:["Tostá el pan.","Pisá la palta y untala en las tostadas.","Cociná el huevo (duro o poché) y ponelo arriba.","Salpimentá a gusto."],
+      nutri:{"Proteína":"14 g","Carbos":"28 g","Grasas":"16 g","Fibra":"6 g"}},
+    R04:{meal:"Cena",t:"Sopa de verduras con pollo",kcal:380,emoji:"🍲",
+      ing:["Pechuga de pollo, 120 g","Zanahoria, zapallo, cebolla y apio","Caldo de verduras, 500 ml","Perejil fresco"],
+      prep:["Cortá las verduras y el pollo en cubos.","Llevá todo al caldo hirviendo.","Cociná 20 minutos a fuego medio.","Serví con perejil fresco."],
+      nutri:{"Proteína":"30 g","Carbos":"22 g","Grasas":"12 g","Fibra":"6 g"}},
+  };
+  function abrirReceta(id){
+    const r=RECETAS[id]; if(!r) return;
+    const guia=!r.kcal;
+    document.getElementById('rcmeal').textContent=r.meal;
+    document.getElementById('rcemoji').textContent=r.emoji;
+    document.getElementById('rctitle').textContent=r.t;
+    document.getElementById('rckcal').textContent=guia?'':(r.kcal+' kcal');
+    document.getElementById('rckcalbig').style.display=guia?'none':'block';
+    document.getElementById('rcnutri').style.display=guia?'none':'grid';
+    document.getElementById('rcEbIng').style.display=guia?'none':'flex';
+    document.getElementById('rcing').style.display=guia?'none':'flex';
+    document.getElementById('rcEbPrep').textContent=guia?'Los 5 hábitos':'Preparación';
+    if(!guia){
+      document.getElementById('rckcalbig').innerHTML=r.kcal+' <small>kcal</small>';
+      document.getElementById('rcnutri').innerHTML=Object.keys(r.nutri).map(k=>'<div class="rc-chip"><b>'+r.nutri[k]+'</b><span>'+k+'</span></div>').join('');
+      document.getElementById('rcing').innerHTML=r.ing.map(x=>'<li>'+x+'</li>').join('');
+    }
+    document.getElementById('rcprep').innerHTML=r.prep.map(x=>'<li>'+x+'</li>').join('');
+    document.querySelector('#receta .rt-scroll').scrollTop=0;
+    document.getElementById('receta').classList.add('on');
+  }
+  function cerrarReceta(){ document.getElementById('receta').classList.remove('on'); }
   function showToast(m){ const t=document.getElementById('toast'); t.textContent=m; t.classList.add('show');
     clearTimeout(window._tt); window._tt=setTimeout(()=>t.classList.remove('show'),2600); }
 
