@@ -106,7 +106,7 @@
   }
 
   .screen-wrap{flex:1;position:relative;overflow:hidden}
-  .screen{position:absolute;inset:0;overflow-y:auto;padding:44px 20px 108px;
+  .screen{position:absolute;inset:0;overflow-y:auto;padding:44px 20px 28px;
     display:none;animation:rise .34s cubic-bezier(.2,.7,.2,1)}
   .screen.active{display:block}
   @keyframes rise{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
@@ -235,7 +235,7 @@
     font-weight:700;font-size:.86rem;padding:7px 13px;border-radius:999px;margin-top:14px}
 
   /* bottom nav */
-  .tabbar{position:absolute;left:0;right:0;bottom:0;height:76px;background:color-mix(in srgb,var(--paper) 86%,transparent);
+  .tabbar{flex:none;height:76px;background:color-mix(in srgb,var(--paper) 92%,transparent);
     backdrop-filter:blur(16px);border-top:1px solid var(--line);display:flex;z-index:30;padding-bottom:env(safe-area-inset-bottom)}
   .tab{flex:1;background:none;border:none;cursor:pointer;color:var(--muted);font-family:inherit;
     display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;font-size:.72rem;font-weight:700;padding-top:8px}
@@ -1011,6 +1011,7 @@
     if(plusActivo()){ cont.className=''; cont.innerHTML=inner; }
     else { cont.className='bloqueado'; cont.innerHTML='<div class="lock-card"><div class="lk-ic">🔒</div><h3>Tai Chi Avanzado</h3><p>El programa avanzado de 4 semanas es parte de la Suscripción Plus.</p><button class="cta" onclick="abrirPaywall()">Desbloquear con la suscripción</button></div><div class="nut-content">'+inner+'</div>'; }
   }
+  try{if(navigator.storage&&navigator.storage.persist)navigator.storage.persist();}catch(e){}
   chequearUnlockURL(); renderStats(); renderNutricion(); renderAvanzado(); renderPrograma();
   /* ---- perfil: foto, recordatorio, reseña, FAQ ---- */
   function abrirSheet(id){document.getElementById(id).classList.add('on');var sc=document.querySelector('#'+id+' .rt-scroll');if(sc)sc.scrollTop=0;}
