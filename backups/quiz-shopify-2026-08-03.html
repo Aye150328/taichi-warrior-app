@@ -1,6 +1,6 @@
 <meta charset="utf-8">
 <!-- ============================================================= -->
-<!--  QUIZ FUNNEL · Tai Chi en silla (Taichi Warrior)      -->
+<!--  QUIZ FUNNEL · Tai Chi en silla (réplica de LemiOinki)      -->
 <!--  Motor de quiz de venta: pasos interactivos + resultado        -->
 <!--  personalizado animado + página de oferta. 1 solo HTML.        -->
 <!--  ----------------------------------------------------------- -->
@@ -148,12 +148,14 @@
 #sp .sp-attack .z{display:flex;align-items:center;gap:9px;font-size:14.5px;margin:6px 0;opacity:0;transform:translateX(-10px);transition:opacity .4s,transform .4s}
 #sp .sp-attack .z.in{opacity:1;transform:none}
 #sp .sp-attack .z .ck{color:var(--bronze2);font-weight:800}
-#sp .sp-loader{text-align:center;padding:34px 0}
+#sp .sp-loader{text-align:center;padding:34px 18px;min-height:calc(84vh - 130px);display:flex;flex-direction:column;justify-content:center;box-sizing:border-box}
 #sp .sp-forge{font-size:42px;animation:spPulse 1s ease-in-out infinite}
 @keyframes spPulse{0%,100%{transform:scale(1);filter:drop-shadow(0 0 0 rgba(27,158,130,0))}50%{transform:scale(1.12);filter:drop-shadow(0 0 14px rgba(27,158,130,.6))}}
 #sp .sp-ring{font-family:'Poppins';font-weight:800;font-size:44px;color:var(--bronze2);margin-top:10px}
 #sp .sp-ltrack{height:9px;background:#ECE7DE;border-radius:6px;overflow:hidden;margin:18px 0}
 #sp .sp-lfill{height:100%;width:0;background:linear-gradient(90deg,var(--crimson),var(--bronze2));transition:width .25s}
+#sp #spPct{min-height:52px;line-height:52px}
+#sp #spLT{min-height:2.8em;margin:16px 0 0;display:flex;align-items:center;justify-content:center;text-align:center}
 
 /* SALES */
 #sp .sp-timer{position:sticky;top:0;z-index:5;background:linear-gradient(90deg,var(--crimson),var(--crimson2));color:#fff;text-align:center;padding:11px;font-family:'Poppins';font-weight:700;text-transform:uppercase;letter-spacing:.04em;font-size:14px}
@@ -393,10 +395,10 @@ var CONFIG = {
   // Imágenes de la oferta (URL pública/CDN). Vacío "" = placeholder limpio.
   IMG: { sale_hero: "https://cdn.shopify.com/s/files/1/0811/9975/9605/files/Taichi14.webp?v=1785602542", program: "" },
 
-  // ====== PLAN (pago único · $16 USD = $24.960 ARS al blue 1560) ======
+  // ====== PLAN (pago único · $24.960 ARS) ======
   // perday se reusa para mostrar el precio en pesos; punit = su etiqueta.
   TIERS: [
-    { name:"ACCESO COMPLETO", old:"$39.99", now:"$16 USD", perday:"24.960", punit:"ARS · dólar blue", off:"60% OFF", bonus:"✔ Pago único · sin suscripciones ni renovaciones", variantId:"48391436075253" }
+    { name:"ACCESO COMPLETO", old:"$62.400", now:"", perday:"$24.960", punit:"ARS", off:"60% OFF", bonus:"✔ Pago único · sin suscripciones ni renovaciones", variantId:"48391436075253" }
   ],
 
   // ====== OFERTA ======
@@ -423,7 +425,7 @@ var CONFIG = {
     { q:"¿Cuánto tiempo necesito al día?", a:"Con 10-15 minutos alcanza. Son sesiones cortas y suaves que encajan en cualquier rutina." },
     { q:"¿Sirve si tengo problemas de rodilla o espalda?", a:"Sí. Es de bajo impacto, sin saltos ni peso. Cada movimiento se puede adaptar a tus molestias." },
     { q:"¿Cómo lo recibo?", a:"Es 100% digital: accedés a tu plan en la app apenas te sumás, desde el celular o la compu." },
-    { q:"¿Es un pago único o una suscripción?", a:"Es un pago único de $16 USD ($24.960 ARS al dólar blue). No hay suscripciones ni cobros automáticos: pagás una sola vez y el acceso es tuyo." }
+    { q:"¿Es un pago único o una suscripción?", a:"Es un pago único de $24.960 ARS. No hay suscripciones ni cobros automáticos: pagás una sola vez y el acceso es tuyo." }
   ],
 
   // ====== PASOS DEL QUIZ (flujo real del funnel Tai Chi, 38 pasos condensados) ======
@@ -490,7 +492,7 @@ var CONFIG = {
     { type:"slider", key:"pesoMeta", phase:"Casi listo", h:"¿Cuál es tu <span class='am'>peso deseado</span>?", sub:"Arrastrá hasta tu objetivo o escribí el número", min:45, max:150, value:72, step:1, unit:"kg" },
     { type:"commit", phase:"Casi listo", h:"¡Ya casi estamos! ¿Estás <span class='am'>listo para comprometerte</span>?", opts:[
       {t:"¡Sí! Hago mi primera sesión HOY"},{t:"Sí, empiezo mañana"},{t:"No estoy seguro todavía…"}] },
-    { type:"input", inputType:"email", phase:"Casi listo", h:"¿A qué <span class='am'>email</span> te enviamos tu plan?", sub:"Te mandamos tu plan de Tai Chi en silla personalizado", placeholder:"tucorreo@ejemplo.com", key:"email" }
+    { type:"input", inputType:"text", phase:"Casi listo", h:"¿Cuál es tu <span class='am'>nombre</span>?", sub:"Así personalizamos tu plan de Tai Chi en silla", placeholder:"Tu nombre", key:"name" }
   ]
 };
 /* ================= FIN CONFIG (no toques abajo) ================= */
@@ -674,7 +676,7 @@ function renderSale(){
       '<span class="sp-tier-name">'+esc(t.name)+'</span><br>'+
       (t.old?'<span class="sp-tier-old">'+esc(t.old)+'</span>':'')+'<span class="sp-tier-now">'+esc(t.now)+'</span>'+
       (t.off?'<br><span class="sp-off">'+esc(t.off)+'</span>':'')+
-      '</div><div class="sp-perday"><div class="pd">'+esc(t.perday)+'</div><div class="u">'+esc(t.punit||'USD/día')+'</div></div></div>'+
+      '</div><div class="sp-perday"><div class="pd">'+esc(t.perday)+'</div><div class="u">'+esc(t.punit||'ARS')+'</div></div></div>'+
       (t.bonus?'<div class="sp-bonus">'+esc(t.bonus)+'</div>':'')+'</div>';
   });
   var incl=(CONFIG.INCLUDES||[]).map(function(x){return '<li><span class="ck">✔</span><span>'+esc(x)+'</span></li>';}).join('');
@@ -689,7 +691,7 @@ function renderSale(){
   var authority='<div class="sp-sec sp-auth"><div class="sp-laurel"><span class="lf">🌿</span><span>+12.400</span><span class="lf">🌿</span></div>'+
     '<div class="sp-auth-sub">personas empezaron su plan de Tai Chi este mes</div>'+
     '<div class="sp-stars">★★★★★ <b>4.8</b>/5</div><div class="sp-auth-sub">basado en +9.200 valoraciones reales</div></div>';
-  var pay='<div class="sp-pay"><span>🔒 Pago 100% seguro y encriptado</span><div class="sp-cards"><span>VISA</span><span>Mastercard</span><span>Amex</span><span>PayPal</span></div></div>';
+  var pay='<div class="sp-pay"><span>🔒 Pago 100% seguro y encriptado</span><div class="sp-cards"><span>MERCADO PAGO</span></div></div>';
 
   stage.style.padding='0';
   stage.innerHTML='<div class="sp-sale">'+
@@ -698,7 +700,7 @@ function renderSale(){
     '<h1 class="sp-h">Tu '+brand+(name?', '+name:'')+'</h1>'+
     '<p class="sp-sub">Personalizado según tus respuestas</p>'+
     '<div class="sp-hero-img">'+hero+'</div>'+
-    '<div class="sp-won">🎉 <b>¡Ganaste el mayor descuento!</b><br><span style="font-size:13px;color:var(--soft)">60% OFF · Pago único de $16 USD ($24.960 ARS), sin suscripciones</span></div>'+
+    '<div class="sp-won">🎉 <b>¡Ganaste el mayor descuento!</b><br><span style="font-size:13px;color:var(--soft)">60% OFF · Pago único de $24.960 ARS, sin suscripciones</span></div>'+
     inclSec + progSec + howSec +
     '<div class="sp-sec"><h2 class="sp-sec-h">Comenzá <span class="am">hoy</span></h2>'+tiers+
     '<a class="sp-cta" id="spBuy" href="#">Obtener mi plan</a></div>'+
